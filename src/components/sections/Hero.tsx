@@ -27,7 +27,7 @@ export default function Hero() {
           </h1>
           
           <p className="text-xl text-muted-foreground mb-12 max-w-lg leading-relaxed">
-            TopPixels is your partner for high-end web development, creative design, and result-driven digital marketing. 
+            toopixels is your partner for high-end web development, creative design, and result-driven digital marketing. 
             We transform vision into professional digital reality.
           </p>
 

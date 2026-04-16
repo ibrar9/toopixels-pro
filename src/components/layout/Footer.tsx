@@ -8,7 +8,7 @@ export default function Footer() {
       <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-4 gap-12">
         <div className="md:col-span-2">
           <Link href="/" className="text-3xl font-black tracking-tighter text-primary">
-            TOPPIXELS<span className="text-white">.</span>
+            TOOPIXELS<span className="text-white">.</span>
           </Link>
           <p className="mt-6 text-slate-400 max-w-sm text-lg leading-relaxed">
             Building creative digital experiences that grow brands. Since 2018, TopPixels has been helping businesses

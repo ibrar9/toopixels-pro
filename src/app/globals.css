@@ -3,8 +3,8 @@
 @theme {
   --color-background: hsl(0 0% 100%);
   --color-foreground: hsl(222.2 84% 4.9%);
-  --color-primary: hsl(221.2 83.2% 53.3%);
-  --color-secondary: hsl(210 40% 96.1%);
+  --color-primary: hsl(0 72.2% 50.6%);
+  --color-secondary: hsl(0 100% 97%);
   --color-muted: hsl(210 40% 96.1%);
   --color-accent: hsl(210 40% 96.1%);
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
