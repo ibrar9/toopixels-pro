@@ -49,7 +49,7 @@ export default function AdminLogin() {
                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground" size={18} />
                <input 
                 type="password" 
-                defaultValue="admin123"
+                defaultValue="Swat69"
                 className="w-full bg-slate-50 border-2 border-transparent focus:border-primary focus:bg-white p-4 pl-12 rounded-2xl outline-none transition-all font-medium" 
                 placeholder="••••••••"
                 required
