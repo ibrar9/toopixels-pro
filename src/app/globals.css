@@ -1,52 +1,32 @@
-@import "tailwindcss";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-@theme {
-  --color-background: hsl(0 0% 100%);
-  --color-foreground: hsl(222.2 84% 4.9%);
-  --color-primary: hsl(0 72.2% 50.6%);
-  --color-secondary: hsl(0 100% 97%);
-  --color-muted: hsl(210 40% 96.1%);
-  --color-accent: hsl(210 40% 96.1%);
-  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
-  --font-serif: var(--font-outfit), ui-serif, Georgia, serif;
+:root {
+  --background: 0 0% 100%;
+  --foreground: 222.2 84% 4.9%;
+  --primary: 0 72.2% 50.6%;
+  --muted-foreground: 215.4 16.3% 46.9%;
 }
 
 @layer base {
   body {
-    background-color: var(--color-background);
-    color: var(--color-foreground);
-    -webkit-font-smoothing: antialiased;
+    @apply bg-background text-foreground antialiased;
   }
 }
 
-/* Luxury Utilities */
 .glass {
-  background-color: rgba(255, 255, 255, 0.7);
-  backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  @apply bg-white/70 backdrop-blur-md border border-white/20;
 }
 
 .section-padding {
-  padding-top: 5rem;
-  padding-bottom: 5rem;
-}
-
-@media (min-width: 768px) {
-  .section-padding {
-    padding-top: 8rem;
-    padding-bottom: 8rem;
-  }
+  @apply py-20 md:py-32;
 }
 
 .heading-xl {
-  font-size: clamp(3rem, 10vw, 5rem);
-  font-weight: 900;
-  letter-spacing: -0.05em;
-  line-height: 1.1;
+  @apply text-5xl md:text-7xl font-extrabold tracking-tighter leading-[1.1];
 }
 
 .heading-lg {
-  font-size: clamp(2rem, 5vw, 3.5rem);
-  font-weight: 800;
-  letter-spacing: -0.02em;
+  @apply text-3xl md:text-5xl font-bold tracking-tight;
 }
