@@ -1,85 +1,81 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { ArrowRight, Star } from "lucide-react";
+import { ArrowRight, Play, Loader2 } from "lucide-react";
 import Link from "next/link";
+import { SiteConfig } from "@/lib/siteConfig";
 
 export default function Hero() {
-  return (
-    <section className="relative min-height-screen flex items-center pt-32 pb-20 px-6 overflow-hidden">
-      {/* Background Decor */}
-      <div className="absolute top-0 right-0 w-1/2 h-1/2 bg-primary/5 rounded-full blur-[120px] -z-10 animate-pulse" />
-      <div className="absolute bottom-0 left-0 w-1/3 h-1/3 bg-blue-400/5 rounded-full blur-[100px] -z-10" />
+  const [config, setConfig] = useState<SiteConfig | null>(null);
 
-      <div className="max-w-7xl mx-auto w-full grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-        <motion.div
-          initial={{ opacity: 0, x: -30 }}
+  useEffect(() => {
+    fetch('/api/config').then(res => res.json()).then(data => setConfig(data));
+  }, []);
+
+  if (!config) return (
+    <div className="min-h-screen flex items-center justify-center">
+       <Loader2 className="animate-spin text-primary" size={48} />
+    </div>
+  );
+
+  return (
+    <section className="relative min-h-screen pt-32 pb-20 flex items-center overflow-hidden bg-white">
+      {/* Background elements */}
+      <div className="absolute top-0 right-0 -translate-y-1/2 translate-x-1/4 w-[800px] h-[800px] bg-primary/5 rounded-full blur-[120px]" />
+      <div className="absolute bottom-0 left-0 translate-y-1/2 -translate-x-1/4 w-[600px] h-[600px] bg-red-500/5 rounded-full blur-[100px]" />
+      
+      <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center relative z-10">
+        <motion.div 
+          initial={{ opacity: 0, x: -50 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.8 }}
         >
-          <div className="inline-flex items-center gap-2 bg-primary/10 text-primary px-4 py-2 rounded-full text-sm font-bold mb-8">
-            <Star size={16} fill="currentColor" />
-            Leading Digital Agency Since 2018
+          <div className="inline-flex items-center gap-2 px-4 py-2 bg-slate-50 border rounded-full text-sm font-bold text-slate-600 mb-8">
+            <span className="w-2 h-2 bg-primary rounded-full animate-pulse" />
+            Leading Digital Agency in Dubai
           </div>
           
-          <h1 className="heading-xl mb-8">
-            We Build Creative <span className="text-primary italic">Digital Experiences</span> That Grow Brands
+          <h1 className="heading-xl mb-8 text-slate-900">
+            {config.home.heroTitle.split(' ').map((word, i) => (
+               <span key={i} className={i === config.home.heroTitle.split(' ').length - 1 ? "text-primary italic" : ""}>{word} </span>
+            ))}
           </h1>
           
-          <p className="text-xl text-muted-foreground mb-12 max-w-lg leading-relaxed">
-            toopixels is your partner for high-end web development, creative design, and result-driven digital marketing. 
-            We transform vision into professional digital reality.
+          <p className="text-xl text-muted-foreground mb-12 max-w-lg leading-relaxed font-medium">
+            {config.home.heroSubtitle}
           </p>
 
-          <div className="flex flex-col sm:flex-row gap-4">
-            <Link
-              href="/portfolio"
-              className="bg-primary text-white px-8 py-4 rounded-2xl text-lg font-bold flex items-center justify-center gap-2 hover:translate-y-[-4px] transition-all shadow-xl shadow-primary/20"
-            >
-              View Our Work <ArrowRight size={20} />
+          <div className="flex flex-col sm:flex-row gap-6">
+            <Link href="/contact" className="bg-primary text-white px-8 py-5 rounded-2xl font-bold flex items-center justify-center gap-2 hover:scale-105 transition-all shadow-xl shadow-primary/20">
+              Start a Project <ArrowRight size={20} />
             </Link>
-            <Link
-              href="/contact"
-              className="bg-white border-2 border-muted px-8 py-4 rounded-2xl text-lg font-bold flex items-center justify-center gap-2 hover:bg-muted transition-all"
-            >
-              Get Started
-            </Link>
-          </div>
-
-          <div className="mt-16 flex items-center gap-6">
-            <div className="flex -space-x-3">
-              {[1, 2, 3, 4].map((i) => (
-                <div key={i} className="w-12 h-12 rounded-full border-4 border-white bg-slate-200" />
-              ))}
-            </div>
-            <div>
-              <p className="font-bold text-lg">1,800+ Customers</p>
-              <p className="text-sm text-muted-foreground text-nowrap">Served globally since we started</p>
-            </div>
+            <button className="flex items-center justify-center gap-4 group">
+               <div className="w-14 h-14 rounded-full border-2 flex items-center justify-center group-hover:bg-slate-50 transition-colors">
+                  <Play className="text-slate-900 fill-slate-900" size={18} />
+               </div>
+               <span className="font-bold">Our Story</span>
+            </button>
           </div>
         </motion.div>
 
-        <motion.div
-           initial={{ opacity: 0, scale: 0.9 }}
-           animate={{ opacity: 1, scale: 1 }}
-           transition={{ duration: 1, delay: 0.2 }}
-           className="relative"
+        <motion.div 
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 1 }}
+          className="relative"
         >
-          <div className="relative z-10 rounded-[2rem] overflow-hidden shadow-2xl border-8 border-white">
-            <div className="aspect-video bg-slate-100 flex items-center justify-center text-slate-400">
-               {/* Visual Placeholder - I'll generate a real image later if needed */}
-               <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80&w=2426" alt="Digital Agency" className="w-full h-full object-cover" />
-            </div>
+          <div className="aspect-[4/5] rounded-[4rem] overflow-hidden bg-slate-100 shadow-2xl relative z-10 border-8 border-white">
+            <img 
+               src={config.home.heroImage} 
+               alt="Digital Innovation" 
+               className="w-full h-full object-cover" 
+            />
           </div>
-          {/* Decorative Card */}
-          <div className="absolute -bottom-6 -left-6 bg-white p-6 rounded-2xl shadow-xl z-20 flex items-center gap-4 border max-w-xs animate-bounce-slow">
-             <div className="w-12 h-12 bg-green-500 rounded-full flex items-center justify-center text-white">
-                <Star fill="white" size={24} />
-             </div>
-             <div>
-                <p className="font-bold">Result Driven</p>
-                <p className="text-xs text-muted-foreground">99% Client Satisfaction</p>
-             </div>
+          {/* Floating cards */}
+          <div className="absolute top-1/4 -left-12 bg-white p-6 rounded-3xl shadow-xl z-20 hidden md:block border animate-bounce">
+             <p className="font-bold text-2xl">99%</p>
+             <p className="text-sm text-muted-foreground">Satisfaction</p>
           </div>
         </motion.div>
       </div>
