@@ -1,13 +1,15 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { motion } from "framer-motion";
-import { ArrowRight, Play, Loader2 } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { ArrowRight, Play, Loader2, Calculator } from "lucide-react";
 import Link from "next/link";
 import { SiteConfig } from "@/lib/siteConfig";
+import CalculatorModal from "../calculator/CalculatorModal";
 
 export default function Hero() {
   const [config, setConfig] = useState<SiteConfig | null>(null);
+  const [isCalculatorOpen, setIsCalculatorOpen] = useState(false);
 
   useEffect(() => {
     fetch('/api/config').then(res => res.json()).then(data => setConfig(data));
@@ -20,6 +22,7 @@ export default function Hero() {
   );
 
   return (
+    <>
     <section className="relative min-h-screen pt-32 pb-20 flex items-center overflow-hidden bg-white">
       {/* Background elements */}
       <div className="absolute top-0 right-0 -translate-y-1/2 translate-x-1/4 w-[800px] h-[800px] bg-primary/5 rounded-full blur-[120px]" />
@@ -37,24 +40,24 @@ export default function Hero() {
           </div>
           
           <h1 className="heading-xl mb-8 text-slate-900">
-            {config.home.heroTitle.split(' ').map((word, i) => (
-               <span key={i} className={i === config.home.heroTitle.split(' ').length - 1 ? "text-primary italic" : ""}>{word} </span>
+            {config?.home?.heroTitle?.split(' ').map((word, i) => (
+               <span key={i} className={i === (config?.home?.heroTitle?.split(' ').length || 0) - 1 ? "text-primary italic" : ""}>{word} </span>
             ))}
           </h1>
           
           <p className="text-xl text-muted-foreground mb-12 max-w-lg leading-relaxed font-medium">
-            {config.home.heroSubtitle}
+            {config?.home?.heroSubtitle}
           </p>
 
           <div className="flex flex-col sm:flex-row gap-6">
             <Link href="/contact" className="bg-primary text-white px-8 py-5 rounded-2xl font-bold flex items-center justify-center gap-2 hover:scale-105 transition-all shadow-xl shadow-primary/20">
               Start a Project <ArrowRight size={20} />
             </Link>
-            <button className="flex items-center justify-center gap-4 group">
-               <div className="w-14 h-14 rounded-full border-2 flex items-center justify-center group-hover:bg-slate-50 transition-colors">
-                  <Play className="text-slate-900 fill-slate-900" size={18} />
-               </div>
-               <span className="font-bold">Our Story</span>
+            <button 
+              onClick={() => setIsCalculatorOpen(true)}
+              className="px-8 py-5 rounded-2xl font-bold flex items-center justify-center gap-2 border-2 text-slate-900 hover:bg-slate-50 transition-all"
+            >
+              <Calculator size={20} /> Cost Calculator
             </button>
           </div>
         </motion.div>
@@ -80,5 +83,11 @@ export default function Hero() {
         </motion.div>
       </div>
     </section>
+    <AnimatePresence>
+      {isCalculatorOpen && (
+        <CalculatorModal isOpen={isCalculatorOpen} onClose={() => setIsCalculatorOpen(false)} />
+      )}
+    </AnimatePresence>
+    </>
   );
 }

@@ -3,9 +3,10 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Menu, X, ArrowRight } from "lucide-react";
+import { Menu, X, ArrowRight, Calculator } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
+import CalculatorModal from "../calculator/CalculatorModal";
 
 const navLinks = [
   { name: "Home", href: "/" },
@@ -17,6 +18,7 @@ const navLinks = [
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
+  const [isCalculatorOpen, setIsCalculatorOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const pathname = usePathname();
 
@@ -29,6 +31,7 @@ export default function Navbar() {
   }, []);
 
   return (
+    <>
     <nav
       className={cn(
         "fixed top-0 w-full z-50 transition-all duration-300 px-6 py-4",
@@ -54,12 +57,20 @@ export default function Navbar() {
               {link.name}
             </Link>
           ))}
-          <Link
-            href="/contact"
-            className="bg-primary text-white px-5 py-2.5 rounded-full text-sm font-semibold flex items-center gap-2 hover:bg-primary/90 transition-all"
-          >
-            Contact Us <ArrowRight size={16} />
-          </Link>
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => setIsCalculatorOpen(true)}
+              className="text-primary hover:bg-primary/5 px-5 py-2.5 rounded-full text-sm font-bold flex items-center gap-2 transition-all"
+            >
+              <Calculator size={16} /> Cost Calculator
+            </button>
+            <Link
+              href="/contact"
+              className="bg-primary text-white px-5 py-2.5 rounded-full text-sm font-semibold flex items-center gap-2 hover:bg-primary/90 transition-all"
+            >
+              Contact Us <ArrowRight size={16} />
+            </Link>
+          </div>
         </div>
 
         {/* Mobile Toggle */}
@@ -88,17 +99,32 @@ export default function Navbar() {
                   {link.name}
                 </Link>
               ))}
-              <Link
-                href="/contact"
-                onClick={() => setIsOpen(false)}
-                className="bg-primary text-white p-4 rounded-xl text-center font-bold"
-              >
-                Get Started
-              </Link>
+              <div className="flex flex-col gap-3 mt-4">
+                <button
+                  onClick={() => { setIsCalculatorOpen(true); setIsOpen(false); }}
+                  className="bg-primary/10 text-primary p-4 rounded-xl text-center font-bold flex items-center justify-center gap-2"
+                >
+                  <Calculator size={18} /> Cost Calculator
+                </button>
+                <Link
+                  href="/contact"
+                  onClick={() => setIsOpen(false)}
+                  className="bg-primary text-white p-4 rounded-xl text-center font-bold"
+                >
+                  Get Started
+                </Link>
+              </div>
             </div>
           </motion.div>
         )}
       </AnimatePresence>
     </nav>
+
+    <AnimatePresence>
+      {isCalculatorOpen && (
+        <CalculatorModal isOpen={isCalculatorOpen} onClose={() => setIsCalculatorOpen(false)} />
+      )}
+    </AnimatePresence>
+    </>
   );
 }
