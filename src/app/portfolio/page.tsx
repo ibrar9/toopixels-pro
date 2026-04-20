@@ -33,7 +33,7 @@ export default function Portfolio() {
     init();
   }, []);
 
-  const primaryCategories = config ? ["All", ...Object.keys(config.portfolioCategories)] : ["All"];
+  const primaryCategories = config?.portfolioCategories ? ["All", ...Object.keys(config.portfolioCategories)] : ["All"];
   const subCategories = config?.portfolioCategories || {};
 
   const filteredItems = projects.filter(item => {
