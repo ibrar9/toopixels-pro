@@ -2,7 +2,7 @@
 
 import fs from 'fs/promises';
 import path from 'path';
-import { mockProjects, mockBlogs, Project, BlogPost } from './db';
+import { mockProjects, mockBlogs, Project, BlogPost, Inquiry } from './db';
 import { defaultSiteConfig, SiteConfig } from './siteConfig';
 
 const DB_PATH = path.join(process.cwd(), 'data-storage.json');
@@ -14,7 +14,8 @@ async function ensureDB() {
     const initialData = { 
        projects: mockProjects, 
        blogs: mockBlogs,
-       config: defaultSiteConfig
+       config: defaultSiteConfig,
+       inquiries: []
     };
     await fs.writeFile(DB_PATH, JSON.stringify(initialData, null, 2));
   }
@@ -54,4 +55,16 @@ export async function updateConfig(config: SiteConfig) {
 export async function getConfig() {
   const data = await getData();
   return data.config || defaultSiteConfig;
+}
+export async function addInquiry(inquiry: Inquiry) {
+  const data = await getData();
+  if (!data.inquiries) data.inquiries = [];
+  data.inquiries.push(inquiry);
+  await saveData(data);
+  return inquiry;
+}
+
+export async function getInquiries() {
+  const data = await getData();
+  return data.inquiries || [];
 }
