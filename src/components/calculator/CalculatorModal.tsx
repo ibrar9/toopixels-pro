@@ -266,12 +266,27 @@ export default function CalculatorModal({ isOpen, onClose }: { isOpen: boolean; 
       let max = 0;
       const d = selections.details;
       
-      const typePrice = websitePricing.projectTypes[selections.subService as keyof typeof websitePricing.projectTypes] || { min: 3000, max: 7000 };
-      min += typePrice.min;
-      max += typePrice.max;
+      const isBusiness = selections.subService === "Business website";
       
-      min += websitePricing.pageCounts[d.pageRange as keyof typeof websitePricing.pageCounts] || 0;
-      max += websitePricing.pageCounts[d.pageRange as keyof typeof websitePricing.pageCounts] || 0;
+      if (isBusiness) {
+        // Business website uses fixed base prices per page tier
+        const tiers: any = {
+          "1–5 pages": 599,
+          "6–15 pages": 899,
+          "16–20 pages": 1499,
+          "20–30 pages": 2499
+        };
+        const base = tiers[d.pageRange as string] || 599;
+        min = base;
+        max = base;
+      } else {
+        const typePrice = websitePricing.projectTypes[selections.subService as keyof typeof websitePricing.projectTypes] || { min: 3000, max: 7000 };
+        min += typePrice.min;
+        max += typePrice.max;
+        
+        min += websitePricing.pageCounts[d.pageRange as keyof typeof websitePricing.pageCounts] || 0;
+        max += websitePricing.pageCounts[d.pageRange as keyof typeof websitePricing.pageCounts] || 0;
+      }
       
       min += websitePricing.designLevels[d.designLevel as keyof typeof websitePricing.designLevels] || 0;
       max += websitePricing.designLevels[d.designLevel as keyof typeof websitePricing.designLevels] || 0;
@@ -934,16 +949,27 @@ export default function CalculatorModal({ isOpen, onClose }: { isOpen: boolean; 
                         <ChevronLeft size={18} /> Back
                       </button>
 
-                      {step === 2 && (
-                        <LogoQuestion 
-                          label="Number of pages" 
-                          sub="Estimated size of your website."
-                          options={Object.keys(websitePricing.pageCounts)} 
-                          prices={Object.values(websitePricing.pageCounts)}
-                          current={selections.details.pageRange} 
-                          onSelect={(v: any) => { updateDetail("pageRange", v); nextStep(); }} 
-                        />
-                      )}
+                      {step === 2 && (() => {
+                        const isBusiness = selections.subService === "Business website";
+                        const options = isBusiness 
+                          ? ["1–5 pages", "6–15 pages", "16–20 pages", "20–30 pages"]
+                          : Object.keys(websitePricing.pageCounts);
+                        const prices = isBusiness 
+                          ? [599, 899, 1499, 2499]
+                          : Object.values(websitePricing.pageCounts);
+
+                        return (
+                          <LogoQuestion 
+                            label="Number of pages" 
+                            sub="Estimated size of your website."
+                            options={options} 
+                            prices={prices}
+                            current={selections.details.pageRange} 
+                            onSelect={(v: any) => { updateDetail("pageRange", v); nextStep(); }} 
+                            hidePlus={isBusiness}
+                          />
+                        );
+                      })()}
                       {step === 3 && (
                         <LogoQuestion 
                           label="Design level" 
@@ -1155,7 +1181,7 @@ export default function CalculatorModal({ isOpen, onClose }: { isOpen: boolean; 
   );
 }
 
-function LogoQuestion({ label, sub, options, prices, current, onSelect, showPerPost }: any) {
+function LogoQuestion({ label, sub, options, prices, current, onSelect, showPerPost, hidePlus }: any) {
   return (
     <div className="space-y-8 animate-in fade-in duration-500">
       <div>
@@ -1175,7 +1201,13 @@ function LogoQuestion({ label, sub, options, prices, current, onSelect, showPerP
             <div>
               <p className="font-black text-lg">{opt}</p>
               <p className={cn("text-xs font-bold mt-1 uppercase tracking-widest", current === opt ? "text-white/80" : "text-primary")}>
-                {showPerPost && (prices[i] === 30 || prices[i] === 50) ? `${prices[i]} AED / POST` : prices[i] === 0 ? "Included Free" : `+ ${prices[i]} AED`}
+                {showPerPost && (prices[i] === 30 || prices[i] === 50) 
+                  ? `${prices[i]} AED / POST` 
+                  : prices[i] === 0 
+                    ? "Included Free" 
+                    : hidePlus 
+                      ? `${prices[i]} AED` 
+                      : `+ ${prices[i]} AED`}
               </p>
             </div>
             <div className={cn("w-10 h-10 rounded-full flex items-center justify-center transition-all", current === opt ? "bg-white text-primary" : "bg-white text-slate-300 group-hover:text-primary")}>
