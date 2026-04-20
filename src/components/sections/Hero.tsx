@@ -12,14 +12,23 @@ export default function Hero() {
   const [isCalculatorOpen, setIsCalculatorOpen] = useState(false);
 
   useEffect(() => {
-    fetch('/api/config').then(res => res.json()).then(data => setConfig(data));
+    fetch('/api/config')
+      .then(res => res.json())
+      .then(data => setConfig(data))
+      .catch(err => {
+        console.error("Failed to load config:", err);
+        // Fallback or silence the error as we provide default below if needed
+      });
   }, []);
 
-  if (!config) return (
-    <div className="min-h-screen flex items-center justify-center">
-       <Loader2 className="animate-spin text-primary" size={48} />
-    </div>
-  );
+  // Define a local default config to avoid blocking the UI if the API is slow or fails
+  const displayConfig = config || {
+    home: {
+      heroTitle: "Build your premium Digital Brand",
+      heroSubtitle: "We focus on quality and innovation to help your business reach its maximum potential in the digital world.",
+      heroImage: "https://images.unsplash.com/photo-1551434678-e076c223a692?auto=format&fit=crop&q=80&w=2070"
+    }
+  };
 
   return (
     <>
@@ -40,13 +49,13 @@ export default function Hero() {
           </div>
           
           <h1 className="heading-xl mb-8 text-slate-900">
-            {config?.home?.heroTitle?.split(' ').map((word, i) => (
-               <span key={i} className={i === (config?.home?.heroTitle?.split(' ').length || 0) - 1 ? "text-primary italic" : ""}>{word} </span>
+            {displayConfig.home.heroTitle.split(' ').map((word, i) => (
+               <span key={i} className={i === (displayConfig.home.heroTitle.split(' ').length || 0) - 1 ? "text-primary italic" : ""}>{word} </span>
             ))}
           </h1>
           
           <p className="text-xl text-muted-foreground mb-12 max-w-lg leading-relaxed font-medium">
-            {config?.home?.heroSubtitle}
+            {displayConfig.home.heroSubtitle}
           </p>
 
           <div className="flex flex-col sm:flex-row gap-6">
@@ -68,11 +77,11 @@ export default function Hero() {
           transition={{ duration: 1 }}
           className="relative"
         >
-          <div className="aspect-[4/5] rounded-[4rem] overflow-hidden bg-slate-100 shadow-2xl relative z-10 border-8 border-white">
+          <div className="aspect-[4/5] rounded-[4rem] overflow-hidden bg-slate-100 shadow-2xl relative z-10 border-8 border-white group">
             <img 
-               src={config.home.heroImage} 
+               src={displayConfig.home.heroImage} 
                alt="Digital Innovation" 
-               className="w-full h-full object-cover" 
+               className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" 
             />
           </div>
           {/* Floating cards */}
