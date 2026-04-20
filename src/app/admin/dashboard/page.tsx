@@ -163,12 +163,12 @@ export default function AdminDashboard() {
                </div>
 
                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                  {Object.entries(config.portfolioCategories || {}).map(([cat, subs]) => (
+                  {Object.entries(config.portfolioCategories || {}).map(([cat, subs]: [string, string[]]) => (
                     <div key={cat} className="p-8 bg-slate-50 rounded-3xl border border-slate-100 relative group">
                        <button onClick={() => removeCategory(cat)} className="absolute top-6 right-6 text-red-400 opacity-0 group-hover:opacity-100 transition-opacity"><Trash2 size={20} /></button>
                        <h4 className="text-xl font-black text-slate-900 mb-6">{cat}</h4>
                        <div className="space-y-3 mb-6">
-                          {subs.map(sub => (
+                          {subs.map((sub: string) => (
                             <div key={sub} className="flex justify-between items-center bg-white p-4 rounded-xl border border-slate-100">
                                <span className="text-sm font-bold text-slate-600">{sub}</span>
                                <button onClick={() => removeSubcategory(cat, sub)} className="text-slate-300 hover:text-red-500"><X size={16} /></button>
@@ -237,7 +237,7 @@ export default function AdminDashboard() {
                         }} 
                         className="w-full bg-slate-50 p-5 rounded-2xl outline-none focus:ring-2 ring-primary appearance-none font-bold"
                       >
-                        {Object.keys(config.portfolioCategories || {}).map(cat => <option key={cat} value={cat}>{cat}</option>)}
+                        {Object.keys(config.portfolioCategories || {}).map((cat: string) => <option key={cat} value={cat}>{cat}</option>)}
                       </select>
                     </div>
                     <div className="space-y-2">
@@ -247,7 +247,7 @@ export default function AdminDashboard() {
                         value={projectData.subCategory}
                         className="w-full bg-slate-50 p-5 rounded-2xl outline-none focus:ring-2 ring-primary appearance-none font-bold"
                       >
-                        {(config.portfolioCategories?.[projectData.category] || []).map(sub => <option key={sub} value={sub}>{sub}</option>)}
+                        {(config.portfolioCategories?.[projectData.category] || []).map((sub: string) => <option key={sub} value={sub}>{sub}</option>)}
                       </select>
                     </div>
                   </div>

@@ -60,6 +60,24 @@
       "email": "hello@toppixels.pro",
       "phone": "+1 (555) 000-0000",
       "address": "Business Bay, Dubai, UAE"
+    },
+    "portfolioCategories": {
+      "Graphics Design": [
+        "General",
+        "Logo "
+      ]
     }
-  }
+  },
+  "inquiries": [
+    {
+      "name": "hi",
+      "email": "sadas@gmail.com",
+      "phone": "+97155672134",
+      "subject": "Project Inquiry",
+      "message": "hi",
+      "id": "1776694614651",
+      "date": "4/20/2026, 6:16:54 PM",
+      "read": false
+    }
+  ]
 }

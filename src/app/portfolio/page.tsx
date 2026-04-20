@@ -77,7 +77,7 @@ export default function Portfolio() {
                   <button onClick={() => setSubFilter("All")} className={`px-5 py-2 rounded-full text-xs font-black uppercase tracking-widest transition-all ${subFilter === "All" ? 'bg-slate-900 text-white' : 'bg-slate-50 text-slate-400 hover:bg-slate-100'}`}>
                     View All
                   </button>
-                  {activeSubcats.map(sub => (
+                  {activeSubcats.map((sub: string) => (
                     <button
                       key={sub}
                       onClick={() => setSubFilter(sub)}
