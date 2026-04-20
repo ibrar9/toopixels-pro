@@ -17,6 +17,7 @@ export interface SiteConfig {
     phone: string;
     address: string;
   };
+  portfolioCategories: Record<string, string[]>;
 }
 
 export const defaultSiteConfig: SiteConfig = {
@@ -38,8 +39,15 @@ export const defaultSiteConfig: SiteConfig = {
     image: "https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&q=80&w=2426"
   },
   contact: {
-    email: "hello@toppixels.pro",
+    email: "hello@toopixels.pro",
     phone: "+1 (555) 000-0000",
     address: "Business Bay, Dubai, UAE"
+  },
+  portfolioCategories: {
+    "Graphics Design": ["Logo Design", "Stationery Design", "Packaging", "Print Media"],
+    "Social Media": ["Social Media Post", "Story Design", "Banner Design", "Reel Cover"],
+    "Branding": ["Full Branding Package", "Brand Identity", "Brand Guidelines"],
+    "Website Development": ["E-commerce", "Corporate", "Portfolio", "Landing Page", "Web App"],
+    "Digital Marketing": ["SEO", "Google Ads", "Meta Ads", "Email Campaigns"]
   }
 };

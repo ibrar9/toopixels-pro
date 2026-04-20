@@ -5,15 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ArrowUpRight, Loader2 } from "lucide-react";
 import { Project } from "@/lib/db";
 
-const primaryCategories = ["All", "Graphics Design", "Digital Marketing", "Social Media", "Website Development", "Branding"];
 
-const subCategories = {
-  "Graphics Design": ["Logo Design", "Stationery Design", "Packaging", "Print Media"],
-  "Social Media": ["Social Media Post", "Story Design", "Banner Design", "Reel Cover"],
-  "Branding": ["Full Branding Package", "Brand Identity", "Brand Guidelines"],
-  "Website Development": ["E-commerce", "Corporate", "Portfolio", "Landing Page", "Web App"],
-  "Digital Marketing": ["SEO", "Google Ads", "Meta Ads", "Email Campaigns"]
-};
 
 export default function Portfolio() {
   const [filter, setFilter] = useState("All");
@@ -21,21 +13,28 @@ export default function Portfolio() {
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
+  const [config, setConfig] = useState<any>(null);
 
   useEffect(() => {
-    const fetchProjects = async () => {
+    const init = async () => {
       try {
-        const res = await fetch('/api/projects');
-        const data = await res.json();
-        setProjects(data);
+        const [projRes, confRes] = await Promise.all([
+          fetch('/api/projects'),
+          fetch('/api/config')
+        ]);
+        setProjects(await projRes.json());
+        setConfig(await confRes.json());
       } catch (err) {
-        console.error("Failed to fetch projects");
+        console.error("Sync failed");
       } finally {
         setLoading(false);
       }
     };
-    fetchProjects();
+    init();
   }, []);
+
+  const primaryCategories = config ? ["All", ...Object.keys(config.portfolioCategories)] : ["All"];
+  const subCategories = config?.portfolioCategories || {};
 
   const filteredItems = projects.filter(item => {
     const matchesPrimary = filter === "All" || item.category === filter;
