@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
   X, ChevronRight, ChevronLeft, Check, Calculator, 
@@ -47,12 +48,8 @@ const logoPricing = {
   },
   mockups: {
     "1 Mockup": 0,
-    "3 Mockups": 5,
-    "Premium Mockup Set": 10
-  },
-  sourceFile: {
-    "Not Included": 0,
-    "Included (Editable File)": 20
+    "3 Mockups": 30,
+    "Premium Mockup Set (10 Mockups)": 50
   }
 };
 
@@ -60,6 +57,17 @@ const profilePricing = {
   pricePerPage: 20,
   sourceFile: 50,
   urgentDelivery: 50
+};
+
+const websiteBannerPricing = {
+  pricePerBanner: 50
+};
+
+const stationeryPricing = {
+  logo: 99,
+  businessCard: { without: 50, with: 70 },
+  letterhead: 50,
+  envelope: 50
 };
 
 const smmDesignPricing = {
@@ -130,7 +138,6 @@ export default function CalculatorModal({ isOpen, onClose }: { isOpen: boolean; 
       total += logoPricing.delivery[d.deliveryTime as keyof typeof logoPricing.delivery] || 0;
       total += logoPricing.formats[d.fileFormat as keyof typeof logoPricing.formats] || 0;
       total += logoPricing.mockups[d.mockupOption as keyof typeof logoPricing.mockups] || 0;
-      total += logoPricing.sourceFile[d.sourceFileOption as keyof typeof logoPricing.sourceFile] || 0;
       return { min: total, max: total };
     }
 
@@ -148,9 +155,14 @@ export default function CalculatorModal({ isOpen, onClose }: { isOpen: boolean; 
       let total = 0;
       const d = selections.details;
       const posts = parseInt(d.postCount) || 1;
-      total += posts * smmDesignPricing.basePerPost;
-      if (d.designType === "Premium Design") total += posts * smmDesignPricing.premiumUpgrade;
-      if (d.platformType === "Multi-platform Support") total += posts * smmDesignPricing.multiPlatform;
+      const pricePerPost = d.designType === "Premium Design" ? 50 : 30;
+      total += posts * pricePerPost;
+      
+      const platforms = selections.details.platforms || [];
+      if (d.platformType === "Multi-platform Support") {
+        total += platforms.length * 499;
+      }
+      
       if (d.captions === "Yes (Include Captions)") total += posts * smmDesignPricing.captions;
       
       // Selectable addons for SMM Design
@@ -160,6 +172,35 @@ export default function CalculatorModal({ isOpen, onClose }: { isOpen: boolean; 
       
       if (d.deliveryTime === "48 hours delivery") total += smmDesignPricing.urgentDelivery;
       
+      return { min: total, max: total };
+    }
+
+    if (selections.subService === "Website Banner") {
+      let total = 0;
+      const d = selections.details;
+      const banners = parseInt(d.bannerCount) || 1;
+      total += banners * websiteBannerPricing.pricePerBanner;
+      return { min: total, max: total };
+    }
+
+    if (selections.subService === "Product Mockup") {
+      let total = 0;
+      const d = selections.details;
+      const count = parseInt(d.mockupDesignCount) || 1;
+      total += count * 50;
+      return { min: total, max: total };
+    }
+
+    if (selections.subService === "Stationery Design") {
+      let total = 0;
+      const d = selections.details;
+      const items = d.stationeryItems || [];
+      if (items.includes("Logo Design Charges")) total += stationeryPricing.logo;
+      if (items.includes("Business Card")) {
+        total += d.cardType === "With QR" ? stationeryPricing.businessCard.with : stationeryPricing.businessCard.without;
+      }
+      if (items.includes("Letterhead")) total += stationeryPricing.letterhead;
+      if (items.includes("Envelope")) total += stationeryPricing.envelope;
       return { min: total, max: total };
     }
 
@@ -182,12 +223,12 @@ export default function CalculatorModal({ isOpen, onClose }: { isOpen: boolean; 
         initial={{ opacity: 0, scale: 0.95, y: 30 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.95, y: 30 }}
-        className="relative w-full max-w-5xl bg-white rounded-[3rem] shadow-2xl overflow-hidden flex flex-col md:flex-row min-h-[700px] max-h-[90vh]"
+        className="relative w-full max-w-5xl bg-white rounded-3xl md:rounded-[3rem] shadow-2xl overflow-hidden flex flex-col md:flex-row md:min-h-[700px] max-h-[95vh] md:max-h-[90vh]"
       >
         {/* Left Sidebar */}
-        <div className="w-full md:w-80 bg-slate-950 p-10 text-white flex flex-col justify-between border-r border-slate-900">
+        <div className="w-full md:w-80 bg-slate-950 p-6 md:p-10 text-white flex flex-col justify-between border-b md:border-b-0 md:border-r border-slate-900 shrink-0">
           <div>
-            <div className="flex items-center gap-3 mb-16">
+            <div className="flex items-center gap-3 mb-6 md:mb-16">
               <div className="w-12 h-12 rounded-2xl bg-primary flex items-center justify-center shadow-lg shadow-primary/20">
                 <Calculator size={24} className="text-white" />
               </div>
@@ -197,37 +238,39 @@ export default function CalculatorModal({ isOpen, onClose }: { isOpen: boolean; 
               </div>
             </div>
 
-            <div className="space-y-8">
+            <div className="space-y-4 md:space-y-8">
               <div className="relative">
-                <div className="absolute -left-10 top-1/2 -translate-y-1/2 w-1 h-12 bg-primary rounded-full" />
-                <h3 className="text-3xl font-bold leading-tight">Fast, Transparent <br/>Estimation.</h3>
+                <div className="absolute -left-6 md:-left-10 top-1/2 -translate-y-1/2 w-1 h-8 md:h-12 bg-primary rounded-full" />
+                <h3 className="text-xl md:text-3xl font-bold leading-tight">Fast, Transparent <br className="hidden md:block"/>Estimation.</h3>
               </div>
-              <p className="text-slate-400 text-sm leading-relaxed font-medium">
-                Our dynamic tool analyzes your specific needs to provide an accurate agency proposal in AED instantly.
+              <p className="text-slate-400 text-xs md:text-sm leading-relaxed font-medium">
+                Our tool analyzes your needs to provide an accurate agency proposal instantly.
               </p>
             </div>
           </div>
 
-          <div className="mt-12">
-            <div className="p-6 rounded-3xl bg-slate-900/50 border border-slate-800">
-               <p className="text-[10px] uppercase tracking-[0.2em] text-slate-500 font-black mb-3 text-center">
-                 {isFixed ? "Total Investment" : "Investment Range"}
-               </p>
-               <div className="flex flex-col items-center gap-1">
-                 <div className="flex items-center gap-1">
-                   {isFixed ? (
-                     <span className="text-4xl font-black text-primary">{min}</span>
-                   ) : (
-                     <div className="flex items-center gap-1">
-                       <span className="text-2xl font-black text-white">{min}</span>
-                       <span className="text-slate-600 font-bold px-1">-</span>
-                       <span className="text-2xl font-black text-primary">{max}</span>
-                     </div>
-                   )}
+          <div className="mt-6 md:mt-12">
+            {!(step === 1 || (selections.subService === "Social Media Design" && step <= 2)) && (
+              <div className="p-6 rounded-3xl bg-slate-900/50 border border-slate-800 animate-in fade-in zoom-in duration-500">
+                 <p className="text-[10px] uppercase tracking-[0.2em] text-slate-500 font-black mb-3 text-center">
+                   {isFixed ? "Total Investment" : "Investment Range"}
+                 </p>
+                 <div className="flex flex-col items-center gap-1">
+                   <div className="flex items-center gap-1">
+                     {isFixed ? (
+                       <span className="text-4xl font-black text-primary">{min}</span>
+                     ) : (
+                       <div className="flex items-center gap-1">
+                         <span className="text-2xl font-black text-white">{min}</span>
+                         <span className="text-slate-600 font-bold px-1">-</span>
+                         <span className="text-2xl font-black text-primary">{max}</span>
+                       </div>
+                     )}
+                   </div>
+                   <span className="text-slate-500 text-[10px] font-black uppercase tracking-widest mt-1">AED (Dirhams)</span>
                  </div>
-                 <span className="text-slate-500 text-[10px] font-black uppercase tracking-widest mt-1">AED (Dirhams)</span>
-               </div>
-            </div>
+              </div>
+            )}
           </div>
         </div>
 
@@ -235,9 +278,9 @@ export default function CalculatorModal({ isOpen, onClose }: { isOpen: boolean; 
         <div className="flex-1 p-8 md:p-14 relative flex flex-col overflow-hidden">
           <button 
             onClick={onClose}
-            className="absolute top-8 right-8 p-3 hover:bg-slate-100 rounded-full transition-all z-20 group"
+            className="absolute top-4 right-4 md:top-8 md:right-8 p-2 md:p-3 hover:bg-slate-100 rounded-full transition-all z-30 group bg-white/80 backdrop-blur-sm shadow-sm md:shadow-none"
           >
-            <X size={24} className="text-slate-400 group-hover:rotate-90 transition-transform" />
+            <X size={20} className="text-slate-400 group-hover:rotate-90 transition-transform md:w-6 md:h-6" />
           </button>
 
           <div className="flex-1 overflow-y-auto custom-scrollbar pr-4">
@@ -250,7 +293,7 @@ export default function CalculatorModal({ isOpen, onClose }: { isOpen: boolean; 
                     <p className="text-slate-500 text-lg font-medium">Get a professional cost estimate for your project.</p>
                   </div>
                   
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 mb-8">
                     {services.map((s) => (
                       <button
                         key={s.id}
@@ -272,6 +315,25 @@ export default function CalculatorModal({ isOpen, onClose }: { isOpen: boolean; 
                         </div>
                       </button>
                     ))}
+                  </div>
+
+                  <div className="p-8 rounded-3xl bg-slate-50/50 border-2 border-dashed border-slate-200 flex flex-col sm:flex-row items-center justify-between gap-6 transition-all hover:border-primary/30 hover:bg-white">
+                    <div className="flex items-center gap-4">
+                      <div className="w-12 h-12 rounded-2xl bg-white flex items-center justify-center shadow-sm text-slate-400">
+                        <Plus size={24} />
+                      </div>
+                      <div>
+                        <h4 className="font-black text-slate-900">Something else in mind?</h4>
+                        <p className="text-slate-500 text-sm font-medium">For customized design or unique projects, let's talk.</p>
+                      </div>
+                    </div>
+                    <Link 
+                      href="/contact" 
+                      onClick={onClose}
+                      className="text-primary font-black flex items-center gap-2 hover:underline group"
+                    >
+                      CONTACT TEAM <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
+                    </Link>
                   </div>
                 </motion.div>
               )}
@@ -301,11 +363,30 @@ export default function CalculatorModal({ isOpen, onClose }: { isOpen: boolean; 
                         )}
                       >
                          <span className="font-bold text-slate-800 text-lg">{sub}</span>
-                         <div className="w-8 h-8 rounded-full border-2 border-white bg-white flex items-center justify-center text-primary shadow-sm">
+                         <div className="w-8 h-8 rounded-full border-2 border-white bg-white flex items-center justify-center text-primary shadow-sm" >
                             <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
                          </div>
                       </button>
                     ))}
+                  </div>
+
+                  <div className="mt-8 p-8 rounded-3xl bg-slate-50/50 border-2 border-dashed border-slate-200 flex flex-col sm:flex-row items-center justify-between gap-6 transition-all hover:border-primary/30 hover:bg-white">
+                    <div className="flex items-center gap-4">
+                      <div className="w-12 h-12 rounded-2xl bg-white flex items-center justify-center shadow-sm text-primary">
+                        <MessageSquare size={24} />
+                      </div>
+                      <div>
+                        <h4 className="font-black text-slate-900">Need a fully custom design?</h4>
+                        <p className="text-slate-500 text-sm font-medium">Contact our specialized team for complex projects.</p>
+                      </div>
+                    </div>
+                    <Link 
+                      href="/contact" 
+                      onClick={onClose}
+                      className="bg-primary text-white px-8 py-4 rounded-2xl font-black shadow-lg shadow-primary/20 hover:scale-105 active:scale-95 transition-all text-center whitespace-nowrap"
+                    >
+                      CONTACT US
+                    </Link>
                   </div>
                 </motion.div>
               )}
@@ -374,17 +455,7 @@ export default function CalculatorModal({ isOpen, onClose }: { isOpen: boolean; 
                       options={Object.keys(logoPricing.mockups)} 
                       prices={Object.values(logoPricing.mockups)}
                       current={selections.details.mockupOption} 
-                      onSelect={(v: any) => { updateDetail("mockupOption", v); nextStep(); }} 
-                    />
-                  )}
-                   {step === 8 && (
-                    <LogoQuestion 
-                      label="7. Source File (Editable)" 
-                      sub="Include the original AI/PSD source files?"
-                      options={Object.keys(logoPricing.sourceFile)} 
-                      prices={Object.values(logoPricing.sourceFile)}
-                      current={selections.details.sourceFileOption} 
-                      onSelect={(v: any) => { updateDetail("sourceFileOption", v); setStep(10); }} 
+                      onSelect={(v: any) => { updateDetail("mockupOption", v); setStep(10); }} 
                     />
                   )}
                 </motion.div>
@@ -398,26 +469,27 @@ export default function CalculatorModal({ isOpen, onClose }: { isOpen: boolean; 
                     </button>
 
                     {step === 2 && (
-                      <div className="space-y-8">
-                        <div>
-                          <h3 className="text-2xl font-black text-slate-900 mb-1">Number of Pages</h3>
-                          <p className="text-slate-500 font-medium text-sm">Each page is professionally designed for 20 AED.</p>
-                        </div>
-                        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                           {["5", "10", "15", "20", "25", "30", "40", "50"].map(num => (
-                             <button 
-                                key={num}
-                                onClick={() => { updateDetail("pageCount", num); nextStep(); }}
-                                className={cn(
-                                  "p-6 rounded-[2rem] border-2 font-black transition-all",
-                                  selections.details.pageCount === num ? "bg-primary border-primary text-white shadow-xl shadow-primary/20 scale-[1.02]" : "bg-slate-50 border-slate-50 text-slate-900 hover:bg-white hover:border-primary/20"
-                                )}
-                             >
-                               {num} Pages
-                             </button>
-                           ))}
-                        </div>
-                      </div>
+                       <div className="space-y-12">
+                          <div>
+                            <h3 className="text-2xl font-black text-slate-900 mb-1">Number of Pages</h3>
+                            <p className="text-slate-500 font-medium text-sm">Each page is professionally designed for 20 AED.</p>
+                          </div>
+                          <div className="px-4 py-10">
+                             <PremiumSlider 
+                                min={1} 
+                                max={50} 
+                                current={parseInt(selections.details.pageCount) || 5} 
+                                onChange={(val) => updateDetail("pageCount", val.toString())} 
+                                unit="Page"
+                             />
+                          </div>
+                          <button 
+                            onClick={nextStep}
+                            className="w-full bg-primary text-white p-6 rounded-[2rem] font-black shadow-xl shadow-primary/20 hover:scale-[1.01] transition-all"
+                          >
+                            CONTINUE WITH {selections.details.pageCount || 5} PAGES
+                          </button>
+                       </div>
                     )}
 
                     {step === 3 && (
@@ -452,25 +524,25 @@ export default function CalculatorModal({ isOpen, onClose }: { isOpen: boolean; 
                     </button>
 
                     {step === 2 && (
-                       <div className="space-y-8">
+                       <div className="space-y-12">
                           <div>
                             <h3 className="text-2xl font-black text-slate-900 mb-1">Number of Posts</h3>
                             <p className="text-slate-500 font-medium text-sm">Professional graphics starting at 30 AED per post.</p>
                           </div>
-                          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                             {["1", "3", "5", "10", "15", "20", "30", "50"].map(num => (
-                               <button 
-                                  key={num}
-                                  onClick={() => { updateDetail("postCount", num); nextStep(); }}
-                                  className={cn(
-                                    "p-6 rounded-[2rem] border-2 font-black transition-all",
-                                    selections.details.postCount === num ? "bg-primary border-primary text-white shadow-xl shadow-primary/20 scale-[1.02]" : "bg-slate-50 border-slate-50 text-slate-900 hover:bg-white hover:border-primary/20"
-                                  )}
-                               >
-                                 {num} Posts
-                               </button>
-                             ))}
+                          <div className="px-4 py-10">
+                             <PremiumSlider 
+                                min={1} 
+                                max={50} 
+                                current={parseInt(selections.details.postCount) || 1} 
+                                onChange={(val) => updateDetail("postCount", val.toString())} 
+                             />
                           </div>
+                          <button 
+                            onClick={nextStep}
+                            className="w-full bg-primary text-white p-6 rounded-[2rem] font-black shadow-xl shadow-primary/20 hover:scale-[1.01] transition-all"
+                          >
+                            CONTINUE WITH {selections.details.postCount || 1} POSTS
+                          </button>
                        </div>
                     )}
 
@@ -479,21 +551,95 @@ export default function CalculatorModal({ isOpen, onClose }: { isOpen: boolean; 
                          label="Design Type" 
                          sub="Select the quality tier."
                          options={["Basic Design", "Premium Design"]}
-                         prices={[0, 50]}
+                         prices={[30, 50]}
                          current={selections.details.designType}
                          onSelect={(v: any) => { updateDetail("designType", v); nextStep(); }}
+                         showPerPost
                        />
                     )}
 
                     {step === 4 && (
-                       <LogoQuestion 
-                         label="Platform Support" 
-                         sub="Single vs Multi-platform optimization."
-                         options={["Single Platform", "Multi-platform Support"]}
-                         prices={[0, 10]}
-                         current={selections.details.platformType}
-                         onSelect={(v: any) => { updateDetail("platformType", v); nextStep(); }}
-                       />
+                       <div className="space-y-8">
+                          <div>
+                            <h3 className="text-2xl font-black text-slate-900 mb-1">Platform Support</h3>
+                            <p className="text-slate-500 font-medium text-sm">Choose where your brand will live.</p>
+                          </div>
+                          
+                          <div className="flex gap-4 mb-8">
+                             {["Single Platform", "Multi-platform Support"].map(t => (
+                               <button 
+                                 key={t}
+                                 onClick={() => {
+                                   updateDetail("platformType", t);
+                                   updateDetail("platforms", []); // Reset selection
+                                 }}
+                                 className={cn(
+                                   "flex-1 p-4 rounded-2xl border-2 font-bold transition-all text-sm",
+                                   selections.details.platformType === t ? "bg-primary text-white border-primary shadow-lg shadow-primary/20" : "bg-slate-50 border-slate-50 text-slate-900"
+                                 )}
+                               >
+                                 {t}
+                               </button>
+                             ))}
+                          </div>
+
+                          <AnimatePresence mode="wait">
+                            {selections.details.platformType === "Single Platform" && (
+                              <motion.div key="single" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}>
+                                <select 
+                                  className="w-full p-6 rounded-3xl bg-slate-50 border-2 border-slate-50 focus:border-primary outline-none font-bold text-lg appearance-none cursor-pointer"
+                                  value={selections.details.platforms?.[0] || ""}
+                                  onChange={(e) => {
+                                    updateDetail("platforms", [e.target.value]);
+                                    nextStep();
+                                  }}
+                                >
+                                  <option value="" disabled>Select a platform...</option>
+                                  {["LinkedIn", "Facebook", "Instagram", "Pinterest", "Twitter", "TikTok"].map(p => (
+                                    <option key={p} value={p}>{p}</option>
+                                  ))}
+                                </select>
+                                <p className="text-center text-[10px] uppercase tracking-widest font-black text-slate-400 mt-4">Single platform selection is included in base price</p>
+                              </motion.div>
+                            )}
+
+                            {selections.details.platformType === "Multi-platform Support" && (
+                              <motion.div key="multi" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="space-y-6">
+                                <div className="grid grid-cols-2 gap-3">
+                                  {["LinkedIn", "Facebook", "Instagram", "Pinterest", "Twitter", "TikTok"].map(p => {
+                                    const isSelected = selections.details.platforms?.includes(p);
+                                    return (
+                                      <button 
+                                        key={p}
+                                        onClick={() => {
+                                          const current = selections.details.platforms || [];
+                                          const next = isSelected ? current.filter((x: string) => x !== p) : [...current, p];
+                                          updateDetail("platforms", next);
+                                        }}
+                                        className={cn(
+                                          "p-4 rounded-2xl border-2 font-bold transition-all flex items-center justify-between",
+                                          isSelected ? "bg-primary/5 border-primary text-primary" : "bg-slate-50 border-slate-50 text-slate-600"
+                                        )}
+                                      >
+                                        {p} {isSelected && <Check size={16} />}
+                                      </button>
+                                    );
+                                  })}
+                                </div>
+                                <div className="bg-primary/10 p-4 rounded-2xl text-center">
+                                   <p className="text-xs font-black text-primary uppercase">Multi-platform Charge: 499 AED / each platform</p>
+                                </div>
+                                <button 
+                                  disabled={(selections.details.platforms?.length || 0) === 0}
+                                  onClick={nextStep}
+                                  className="w-full bg-primary text-white p-6 rounded-[2rem] font-black shadow-xl shadow-primary/20 disabled:opacity-50 disabled:shadow-none transition-all"
+                                >
+                                  CONTINUE WITH {selections.details.platforms?.length || 0} PLATFORMS
+                                </button>
+                              </motion.div>
+                            )}
+                          </AnimatePresence>
+                       </div>
                     )}
 
                     {step === 5 && (
@@ -548,8 +694,144 @@ export default function CalculatorModal({ isOpen, onClose }: { isOpen: boolean; 
                  </motion.div>
               )}
 
-              {/* FALLBACK FOR OTHER SERVICES */}
-              {step >= 2 && step < 10 && !["Logo Design", "Company Profile", "Social Media Design"].includes(selections.subService!) && (
+               {/* WEBSITE BANNER INPUTS */}
+               {step === 2 && selections.subService === "Website Banner" && (
+                 <motion.div key="banner-step-2" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
+                    <button onClick={prevStep} className="inline-flex items-center gap-2 text-primary font-bold text-sm mb-12">
+                      <ChevronLeft size={18} /> Back
+                    </button>
+                    <div className="space-y-12">
+                       <div>
+                         <h3 className="text-2xl font-black text-slate-900 mb-1">Number of Banners</h3>
+                         <p className="text-slate-500 font-medium text-sm">Professional website banners for 50 AED each.</p>
+                       </div>
+                       <div className="px-4 py-10">
+                          <PremiumSlider 
+                             min={1} 
+                             max={50} 
+                             current={parseInt(selections.details.bannerCount) || 1} 
+                             onChange={(val) => updateDetail("bannerCount", val.toString())} 
+                             unit="Banner"
+                          />
+                       </div>
+                       <button 
+                         onClick={() => setStep(10)} 
+                         className="w-full bg-primary text-white p-6 rounded-[2rem] font-black shadow-xl shadow-primary/20 hover:scale-[1.01] transition-all"
+                       >
+                         CONTINUE WITH {selections.details.bannerCount || 1} BANNERS
+                       </button>
+                    </div>
+                 </motion.div>
+               )}
+
+               {/* PRODUCT MOCKUP INPUTS */}
+               {step === 2 && selections.subService === "Product Mockup" && (
+                 <motion.div key="mockup-step-2" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
+                    <button onClick={prevStep} className="inline-flex items-center gap-2 text-primary font-bold text-sm mb-12">
+                      <ChevronLeft size={18} /> Back
+                    </button>
+                    <div className="space-y-12">
+                       <div>
+                         <h3 className="text-2xl font-black text-slate-900 mb-1">Number of Mockup Designs</h3>
+                         <p className="text-slate-500 font-medium text-sm">Professional product mockups for 50 AED each.</p>
+                       </div>
+                       <div className="px-4 py-10">
+                          <PremiumSlider 
+                             min={1} 
+                             max={50} 
+                             current={parseInt(selections.details.mockupDesignCount) || 1} 
+                             onChange={(val) => updateDetail("mockupDesignCount", val.toString())} 
+                             unit="Design"
+                          />
+                       </div>
+                       <button 
+                         onClick={() => setStep(10)} 
+                         className="w-full bg-primary text-white p-6 rounded-[2rem] font-black shadow-xl shadow-primary/20 hover:scale-[1.01] transition-all"
+                       >
+                         CONTINUE WITH {selections.details.mockupDesignCount || 1} DESIGNS
+                       </button>
+                    </div>
+                 </motion.div>
+               )}
+
+               {/* STATIONERY DESIGN INPUTS */}
+               {step === 2 && selections.subService === "Stationery Design" && (
+                 <motion.div key="stationery-step-2" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
+                    <button onClick={prevStep} className="inline-flex items-center gap-2 text-primary font-bold text-sm mb-12">
+                      <ChevronLeft size={18} /> Back
+                    </button>
+                    <div className="space-y-10">
+                       <div>
+                         <h3 className="text-2xl font-black text-slate-900 mb-1">Stationery Essentials</h3>
+                         <p className="text-slate-500 font-medium text-sm">Select the items you need for your brand kit.</p>
+                       </div>
+                       
+                       <div className="grid grid-cols-1 gap-3">
+                         {[
+                           { id: "Logo Design Charges", label: "Logo Design Charges", price: 99 },
+                           { id: "Business Card", label: "Business Card", hasSub: true },
+                           { id: "Letterhead", label: "Letterhead", price: 50 },
+                           { id: "Envelope", label: "Envelope", price: 50 },
+                         ].map(item => {
+                            const isSelected = selections.details.stationeryItems?.includes(item.id);
+                            return (
+                               <div key={item.id} className="space-y-3">
+                                  <button
+                                    onClick={() => {
+                                      const current = selections.details.stationeryItems || [];
+                                      const next = isSelected ? current.filter((x: string) => x !== item.id) : [...current, item.id];
+                                      updateDetail("stationeryItems", next);
+                                      if (!isSelected && item.id === "Business Card") updateDetail("cardType", "Without QR");
+                                    }}
+                                    className={cn(
+                                      "w-full p-6 rounded-3xl border-2 transition-all flex items-center justify-between group text-left",
+                                      isSelected ? "bg-primary text-white border-primary shadow-lg shadow-primary/20 scale-[1.01]" : "bg-slate-50 border-slate-50 text-slate-900 hover:bg-white hover:border-primary/20"
+                                    )}
+                                  >
+                                    <div className="flex items-center gap-4">
+                                      <div className={cn("w-6 h-6 rounded-lg border-2 flex items-center justify-center transition-all", isSelected ? "bg-white border-white text-primary" : "border-slate-200 group-hover:border-primary")}>
+                                        {isSelected && <Check size={14} />}
+                                      </div>
+                                      <span className="font-black text-lg">{item.label}</span>
+                                    </div>
+                                    {item.price && <span className={cn("text-sm font-bold", isSelected ? "text-white/80" : "text-primary")}>{item.price} AED</span>}
+                                  </button>
+
+                                  {item.id === "Business Card" && isSelected && (
+                                    <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="pl-6 sm:pl-14 flex flex-col sm:flex-row gap-3">
+                                       {["Without QR", "With QR"].map(type => (
+                                         <button 
+                                           key={type}
+                                           onClick={() => updateDetail("cardType", type)}
+                                           className={cn(
+                                             "flex-1 p-4 rounded-2xl border-2 text-xs font-black transition-all flex justify-between items-center sm:block sm:text-center",
+                                             selections.details.cardType === type ? "bg-slate-900 text-white border-slate-900 shadow-md scale-[1.02]" : "bg-white border-slate-100 text-slate-400 hover:border-slate-200"
+                                           )}
+                                         >
+                                           <span>{type}</span>
+                                           <span className="block sm:mt-1 opacity-70">{type === "With QR" ? "70" : "50"} AED</span>
+                                         </button>
+                                       ))}
+                                    </motion.div>
+                                  )}
+                               </div>
+                            )
+                         })}
+                       </div>
+
+                       <button 
+                         disabled={(selections.details.stationeryItems?.length || 0) === 0}
+                         onClick={() => setStep(10)} 
+                         className="w-full bg-primary text-white p-4 sm:p-6 rounded-[2rem] font-black shadow-xl shadow-primary/20 disabled:opacity-50 disabled:shadow-none transition-all"
+                       >
+                         CONTINUE WITH {selections.details.stationeryItems?.length || 0} ITEMS
+                       </button>
+                    </div>
+                 </motion.div>
+               )}
+
+               {/* FALLBACK FOR OTHER SERVICES */}
+              {step >= 2 && step < 10 && !["Logo Design", "Company Profile", "Social Media Design", "Website Banner", "Product Mockup", "Stationery Design"].includes(selections.subService!) && (
                  <motion.div key="other-details" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }}>
                     <button onClick={prevStep} className="inline-flex items-center gap-2 text-primary font-bold text-sm mb-12"><ChevronLeft size={18} /> Back</button>
                     <div className="text-center py-20">
@@ -609,9 +891,13 @@ export default function CalculatorModal({ isOpen, onClose }: { isOpen: boolean; 
                     <button className="bg-primary text-white p-6 rounded-[2rem] font-black flex items-center justify-center gap-3 hover:scale-[1.02] active:scale-95 transition-all shadow-xl shadow-primary/20">
                        START PROJECT <Rocket size={20} />
                     </button>
-                    <button className="bg-slate-950 text-white p-6 rounded-[2rem] font-black flex items-center justify-center gap-3 hover:bg-slate-800 transition-colors">
+                    <Link 
+                      href="/contact"
+                      onClick={onClose}
+                      className="bg-slate-950 text-white p-6 rounded-[2rem] font-black flex items-center justify-center gap-3 hover:bg-slate-800 transition-colors"
+                    >
                        CUSTOM QUOTE <Mail size={20} />
-                    </button>
+                    </Link>
                     <button className="bg-emerald-500 text-white p-6 rounded-[2rem] font-black flex items-center justify-center gap-3 hover:scale-[1.02] active:scale-95 transition-all col-span-full shadow-emerald-500/20 shadow-xl">
                        CHAT ON WHATSAPP <MessageSquare size={20} />
                     </button>
@@ -622,13 +908,13 @@ export default function CalculatorModal({ isOpen, onClose }: { isOpen: boolean; 
           </div>
 
           {/* Footer Progress */}
-          <div className="mt-8 pt-10 border-t border-slate-50 flex items-center justify-between">
-             <div className="flex gap-2">
+          <div className="mt-6 md:mt-8 pt-6 md:pt-10 border-t border-slate-50 flex flex-col md:flex-row items-center justify-between gap-4">
+             <div className="flex flex-wrap justify-center gap-1.5 md:gap-2">
                {[0,1,2,3,4,5,6,7,8,10].map((i) => (
-                 <div key={i} className={cn("h-1.5 rounded-full transition-all duration-500", i === step ? "w-8 bg-primary" : i < step ? "w-4 bg-emerald-400" : "w-4 bg-slate-100")} />
+                 <div key={i} className={cn("h-1.5 rounded-full transition-all duration-500", i === step ? "w-6 md:w-8 bg-primary" : i < step ? "w-3 md:w-4 bg-emerald-400" : "w-3 md:w-4 bg-slate-100")} />
                ))}
              </div>
-             <p className="text-[10px] uppercase tracking-widest font-black text-slate-300">Confidential Estimate • All Rights Reserved</p>
+             <p className="text-[9px] md:text-[10px] uppercase tracking-widest font-black text-slate-300">Confidential Estimate • All Rights Reserved</p>
           </div>
         </div>
       </motion.div>
@@ -636,7 +922,7 @@ export default function CalculatorModal({ isOpen, onClose }: { isOpen: boolean; 
   );
 }
 
-function LogoQuestion({ label, sub, options, prices, current, onSelect }: any) {
+function LogoQuestion({ label, sub, options, prices, current, onSelect, showPerPost }: any) {
   return (
     <div className="space-y-8 animate-in fade-in duration-500">
       <div>
@@ -656,7 +942,7 @@ function LogoQuestion({ label, sub, options, prices, current, onSelect }: any) {
             <div>
               <p className="font-black text-lg">{opt}</p>
               <p className={cn("text-xs font-bold mt-1 uppercase tracking-widest", current === opt ? "text-white/80" : "text-primary")}>
-                {prices[i] === 0 ? "Included Free" : `+ ${prices[i]} AED`}
+                {showPerPost && (prices[i] === 30 || prices[i] === 50) ? `${prices[i]} AED / POST` : prices[i] === 0 ? "Included Free" : `+ ${prices[i]} AED`}
               </p>
             </div>
             <div className={cn("w-10 h-10 rounded-full flex items-center justify-center transition-all", current === opt ? "bg-white text-primary" : "bg-white text-slate-300 group-hover:text-primary")}>
@@ -669,9 +955,69 @@ function LogoQuestion({ label, sub, options, prices, current, onSelect }: any) {
   );
 }
 
+function PremiumSlider({ min, max, current, onChange, unit = "Post" }: { min: number, max: number, current: number, onChange: (val: number) => void, unit?: string }) {
+  return (
+    <div className="relative w-full py-6">
+      {/* Label Tooltip */}
+      <div 
+        className="absolute -top-6 transition-all duration-150 ease-out pointer-events-none"
+        style={{ left: `${((current - min) / (max - min)) * 100}%`, transform: "translateX(-50%)" }}
+      >
+        <div className="bg-primary text-white px-3 py-1 rounded-lg text-sm font-black shadow-lg relative mb-2">
+          {current}
+          <div className="absolute top-full left-1/2 -translate-x-1/2 w-0 h-0 border-l-[6px] border-l-transparent border-r-[6px] border-r-transparent border-t-[8px] border-t-primary" />
+        </div>
+      </div>
+
+      <input
+        type="range"
+        min={min}
+        max={max}
+        value={current}
+        onChange={(e) => onChange(parseInt(e.target.value))}
+        className="w-full h-3 bg-slate-100 rounded-full appearance-none cursor-pointer accent-primary"
+        style={{
+          background: `linear-gradient(to right, #ef4444 0%, #ef4444 ${((current - min) / (max - min)) * 100}%, #f1f5f9 ${((current - min) / (max - min)) * 100}%, #f1f5f9 100%)`
+        }}
+      />
+      <div className="flex justify-between mt-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">
+        <span>{min} {unit}</span>
+        <span>{max} {unit}s Max</span>
+      </div>
+
+      <style jsx>{`
+        input[type='range']::-webkit-slider-thumb {
+          -webkit-appearance: none;
+          appearance: none;
+          width: 28px;
+          height: 28px;
+          background: #ffffff;
+          border: 4px solid #ef4444;
+          border-radius: 50%;
+          cursor: pointer;
+          box-shadow: 0 4px 10px rgba(239, 68, 68, 0.3);
+          transition: transform 0.1s ease-in-out;
+        }
+        input[type='range']::-webkit-slider-thumb:hover {
+          transform: scale(1.1);
+        }
+        input[type='range']::-moz-range-thumb {
+          width: 28px;
+          height: 28px;
+          background: #ffffff;
+          border: 4px solid #ef4444;
+          border-radius: 50%;
+          cursor: pointer;
+          box-shadow: 0 4px 10px rgba(239, 68, 68, 0.3);
+        }
+      `}</style>
+    </div>
+  );
+}
+
 function getSubServices(serviceId: ServiceID): string[] {
   switch (serviceId) {
-    case "graphic": return ["Logo Design", "Company Profile", "Social Media Design", "Website Banner", "Product Mockup", "Packaging Design", "Stationery Design"];
+    case "graphic": return ["Logo Design", "Company Profile", "Social Media Design", "Website Banner", "Product Mockup", "Stationery Design"];
     case "marketing": return ["Google Ads", "Meta Ads", "TikTok Ads", "SEO", "YouTube Ads", "Email Marketing"];
     case "website": return ["Restaurant", "Real Estate", "E-commerce", "Corporate", "Clinic", "Salon", "Education", "Travel", "Portfolio", "Other"];
     case "smm": return ["Instagram", "Facebook", "LinkedIn", "TikTok", "YouTube"];
