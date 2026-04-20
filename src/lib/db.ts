@@ -1,9 +1,11 @@
 export interface Project {
   id: string;
   title: string;
-  category: "Graphics Design" | "Digital Marketing" | "Social Media" | "Website Development";
+  category: "Graphics Design" | "Digital Marketing" | "Social Media" | "Website Development" | "Branding";
+  subCategory: string; // e.g., "Logo Design", "Stationery", "Packaging"
   description: string;
-  image: string;
+  image: string; // Featured image
+  gallery?: string[]; // Multiple images
   featured: boolean;
 }
 
@@ -43,7 +45,8 @@ export const mockProjects: Project[] = [
     id: "1",
     title: "EcoBrand Identity",
     category: "Graphics Design",
-    description: "Full visual identity and logo design for a sustainable tech company.",
+    subCategory: "Logo Design",
+    description: "Full visual identity and logo design for a sustainable tech company. We focused on minimalism and earth tones to reflect their core values.",
     image: "https://images.unsplash.com/photo-1541462608141-ad4d0b942085?auto=format&fit=crop&q=80&w=2426",
     featured: true,
   },
@@ -51,7 +54,8 @@ export const mockProjects: Project[] = [
     id: "2",
     title: "FinTech Platform",
     category: "Website Development",
-    description: "Corporate banking platform with high security and rapid performance.",
+    subCategory: "Web App",
+    description: "Corporate banking platform with high security and rapid performance, designed for the modern financial sector.",
     image: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80&w=2426",
     featured: true,
   }

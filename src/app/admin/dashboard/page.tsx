@@ -14,7 +14,22 @@ export default function AdminDashboard() {
   const router = useRouter();
 
   // Project Form State
-  const [projectData, setProjectData] = useState({ title: "", category: "Graphics Design", image: "https://images.unsplash.com/photo-1541462608141-ad4d0b942085?auto=format" });
+  const [projectData, setProjectData] = useState({ 
+    title: "", 
+    category: "Graphics Design", 
+    subCategory: "Logo Design",
+    description: "",
+    image: "https://images.unsplash.com/photo-1541462608141-ad4d0b942085?auto=format",
+    gallery: [] as string[]
+  });
+
+  const categories = {
+    "Graphics Design": ["Logo Design", "Stationery Design", "Packaging", "Print Media"],
+    "Social Media": ["Social Media Post", "Story Design", "Banner Design", "Reel Cover"],
+    "Branding": ["Full Branding Package", "Brand Identity", "Brand Guidelines"],
+    "Website Development": ["E-commerce", "Corporate", "Portfolio", "Landing Page", "Web App"],
+    "Digital Marketing": ["SEO", "Google Ads", "Meta Ads", "Email Campaigns"]
+  };
   
   // Blog Form State
   const [blogData, setBlogData] = useState({ title: "", category: "Technology", excerpt: "", image: "https://images.unsplash.com/photo-1542744173-8e7e53415bb0?auto=format" });
@@ -128,10 +143,62 @@ export default function AdminDashboard() {
            <div className="bg-white w-full max-w-xl rounded-[3rem] p-12 relative shadow-2xl">
               <button onClick={() => setShowProjectForm(false)} className="absolute top-8 right-8 text-slate-400 hover:text-slate-900"><X size={24} /></button>
               <h2 className="text-3xl font-black mb-8">Add Project</h2>
-              <form onSubmit={handleCreateProject} className="space-y-5">
-                 <input onChange={(e) => setProjectData({...projectData, title: e.target.value})} className="w-full bg-slate-50 p-5 rounded-2xl outline-none focus:ring-2 ring-primary" placeholder="Project Name" required />
-                 <button type="submit" disabled={loading} className="w-full bg-slate-900 text-white p-6 rounded-2xl font-bold">Upload Project</button>
-              </form>
+               <form onSubmit={handleCreateProject} className="space-y-4 max-h-[70vh] overflow-y-auto px-2">
+                  <div className="space-y-2">
+                    <label className="text-xs font-bold uppercase text-slate-400 ml-1">Project Name</label>
+                    <input onChange={(e) => setProjectData({...projectData, title: e.target.value})} className="w-full bg-slate-50 p-5 rounded-2xl outline-none focus:ring-2 ring-primary" placeholder="Project Name" required />
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <label className="text-xs font-bold uppercase text-slate-400 ml-1">Category</label>
+                      <select 
+                        onChange={(e) => {
+                          const cat = e.target.value as keyof typeof categories;
+                          setProjectData({...projectData, category: cat, subCategory: categories[cat][0]});
+                        }} 
+                        className="w-full bg-slate-50 p-5 rounded-2xl outline-none focus:ring-2 ring-primary appearance-none font-bold"
+                      >
+                        {Object.keys(categories).map(cat => <option key={cat} value={cat}>{cat}</option>)}
+                      </select>
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-xs font-bold uppercase text-slate-400 ml-1">Subcategory</label>
+                      <select 
+                        onChange={(e) => setProjectData({...projectData, subCategory: e.target.value})} 
+                        value={projectData.subCategory}
+                        className="w-full bg-slate-50 p-5 rounded-2xl outline-none focus:ring-2 ring-primary appearance-none font-bold"
+                      >
+                        {categories[projectData.category as keyof typeof categories].map(sub => <option key={sub} value={sub}>{sub}</option>)}
+                      </select>
+                    </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <label className="text-xs font-bold uppercase text-slate-400 ml-1">Description</label>
+                    <textarea 
+                      onChange={(e) => setProjectData({...projectData, description: e.target.value})} 
+                      className="w-full bg-slate-50 p-5 rounded-2xl outline-none focus:ring-2 ring-primary" 
+                      placeholder="Project details, tools used, client goals..."
+                      rows={4}
+                      required 
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <label className="text-xs font-bold uppercase text-slate-400 ml-1">Gallery Images (Comma separated URLs)</label>
+                    <textarea 
+                      onChange={(e) => setProjectData({...projectData, gallery: e.target.value.split(',').map(s => s.trim())})} 
+                      className="w-full bg-slate-50 p-5 rounded-2xl outline-none focus:ring-2 ring-primary" 
+                      placeholder="URL1, URL2, URL3..."
+                      rows={2}
+                    />
+                  </div>
+
+                  <button type="submit" disabled={loading} className="w-full bg-slate-900 text-white p-6 rounded-2xl font-black mt-4 hover:bg-primary transition-colors">
+                    {loading ? "Uploading..." : "Publish to Portfolio"}
+                  </button>
+               </form>
            </div>
         </div>
       )}
