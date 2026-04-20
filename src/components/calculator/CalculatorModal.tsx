@@ -70,6 +70,63 @@ const stationeryPricing = {
   envelope: 50
 };
 
+const websitePricing = {
+  projectTypes: {
+    "Business website": { min: 3000, max: 7000 },
+    "Ecommerce store": { min: 5000, max: 15000 },
+    "Portfolio": { min: 2000, max: 5000 },
+    "Landing page": { min: 1500, max: 3500 },
+    "Web app": { min: 8000, max: 25000 },
+    "Blog/news site": { min: 3000, max: 6000 }
+  },
+  pageCounts: {
+    "1–5 pages": 0,
+    "6–15 pages": 1500,
+    "16–30 pages": 3500,
+    "30+ pages": 7000
+  },
+  designLevels: {
+    "Template-based": 0,
+    "Semi-custom": 2000,
+    "Fully custom UI/UX": 5000
+  },
+  features: {
+    "Contact form": 200,
+    "Blog": 800,
+    "CMS/admin panel": 2500,
+    "Booking system": 3000,
+    "User login": 2500,
+    "Payment gateway": 3000,
+    "Ecommerce/cart": 5000,
+    "Multilingual": 1500,
+    "Live chat": 500,
+    "API integrations": 3500,
+    "SEO setup": 1000,
+    "Analytics/dashboard": 800
+  },
+  contentStatus: {
+    "I have all content ready": 0,
+    "I need help with copywriting": 1500,
+    "I need images/graphics too": 1500
+  },
+  brandingStatus: {
+    "Brand already exists": 0,
+    "Need light branding": 1500,
+    "Need full branding package": 4500
+  },
+  urgency: {
+    "Flexible": 0,
+    "1–2 months": 0,
+    "2–4 weeks": 2000,
+    "Urgent / ASAP": 5000
+  },
+  maintenance: {
+    "No maintenance": 0,
+    "Basic maintenance": 1000,
+    "Ongoing support & updates": 3000
+  }
+};
+
 const smmDesignPricing = {
   basePerPost: 30,
   premiumUpgrade: 50,
@@ -204,11 +261,47 @@ export default function CalculatorModal({ isOpen, onClose }: { isOpen: boolean; 
       return { min: total, max: total };
     }
 
+    if (selections.serviceId === "website") {
+      let min = 0;
+      let max = 0;
+      const d = selections.details;
+      
+      const typePrice = websitePricing.projectTypes[selections.subService as keyof typeof websitePricing.projectTypes] || { min: 3000, max: 7000 };
+      min += typePrice.min;
+      max += typePrice.max;
+      
+      min += websitePricing.pageCounts[d.pageRange as keyof typeof websitePricing.pageCounts] || 0;
+      max += websitePricing.pageCounts[d.pageRange as keyof typeof websitePricing.pageCounts] || 0;
+      
+      min += websitePricing.designLevels[d.designLevel as keyof typeof websitePricing.designLevels] || 0;
+      max += websitePricing.designLevels[d.designLevel as keyof typeof websitePricing.designLevels] || 0;
+      
+      const features = selections.addons || [];
+      features.forEach(f => {
+        const p = websitePricing.features[f as keyof typeof websitePricing.features] || 0;
+        min += p;
+        max += p;
+      });
+      
+      min += websitePricing.contentStatus[d.contentStatus as keyof typeof websitePricing.contentStatus] || 0;
+      max += websitePricing.contentStatus[d.contentStatus as keyof typeof websitePricing.contentStatus] || 0;
+      
+      min += websitePricing.brandingStatus[d.brandingStatus as keyof typeof websitePricing.brandingStatus] || 0;
+      max += websitePricing.brandingStatus[d.brandingStatus as keyof typeof websitePricing.brandingStatus] || 0;
+      
+      min += websitePricing.urgency[d.urgency as keyof typeof websitePricing.urgency] || 0;
+      max += websitePricing.urgency[d.urgency as keyof typeof websitePricing.urgency] || 0;
+      
+      min += websitePricing.maintenance[d.maintenance as keyof typeof websitePricing.maintenance] || 0;
+      max += websitePricing.maintenance[d.maintenance as keyof typeof websitePricing.maintenance] || 0;
+      
+      return { min, max };
+    }
+
     let min = 0;
     let max = 0;
     if (selections.serviceId === "graphic") { min = 500; max = 1500; }
     if (selections.serviceId === "marketing") { min = 1200; max = 5000; }
-    if (selections.serviceId === "website") { min = 2500; max = 12000; }
     if (selections.serviceId === "smm") { min = 800; max = 3500; }
     const addonCost = selections.addons.length * 200;
     return { min: min + addonCost, max: max + addonCost };
@@ -345,8 +438,12 @@ export default function CalculatorModal({ isOpen, onClose }: { isOpen: boolean; 
                     <ChevronLeft size={18} /> Back to Services
                   </button>
                   <div className="mb-12">
-                    <h2 className="text-4xl font-black text-slate-900 mb-4">Choose Design Type</h2>
-                    <p className="text-slate-500 text-lg font-medium capitalize">Refining your {selections.serviceId} selection.</p>
+                    <h2 className="text-4xl font-black text-slate-900 mb-4">
+                      {selections.serviceId === 'website' ? "Calculate your website cost in 60 seconds" : "Choose Design Type"}
+                    </h2>
+                    <p className="text-slate-500 text-lg font-medium capitalize">
+                      {selections.serviceId === 'website' ? "Answer a few quick questions to get an estimated budget and timeline." : `Refining your ${selections.serviceId} selection.`}
+                    </p>
                   </div>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -830,8 +927,92 @@ export default function CalculatorModal({ isOpen, onClose }: { isOpen: boolean; 
                  </motion.div>
                )}
 
-               {/* FALLBACK FOR OTHER SERVICES */}
-              {step >= 2 && step < 10 && !["Logo Design", "Company Profile", "Social Media Design", "Website Banner", "Product Mockup", "Stationery Design"].includes(selections.subService!) && (
+                {/* WEBSITE DESIGN DYNAMIC FLOW */}
+                {selections.serviceId === "website" && step >= 2 && step <= 9 && (
+                   <motion.div key={`web-step-${step}`} initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }}>
+                      <button onClick={prevStep} className="inline-flex items-center gap-2 text-primary font-bold text-sm mb-12">
+                        <ChevronLeft size={18} /> Back
+                      </button>
+
+                      {step === 2 && (
+                        <LogoQuestion 
+                          label="Number of pages" 
+                          sub="Estimated size of your website."
+                          options={Object.keys(websitePricing.pageCounts)} 
+                          prices={Object.values(websitePricing.pageCounts)}
+                          current={selections.details.pageRange} 
+                          onSelect={(v: any) => { updateDetail("pageRange", v); nextStep(); }} 
+                        />
+                      )}
+                      {step === 3 && (
+                        <LogoQuestion 
+                          label="Design level" 
+                          sub="Choose the visual complexity."
+                          options={Object.keys(websitePricing.designLevels)} 
+                          prices={Object.values(websitePricing.designLevels)}
+                          current={selections.details.designLevel} 
+                          onSelect={(v: any) => { updateDetail("designLevel", v); nextStep(); }} 
+                        />
+                      )}
+                      {step === 4 && (
+                        <div className="space-y-8">
+                           <div>
+                             <h3 className="text-2xl font-black text-slate-900 mb-1">Select Features</h3>
+                             <p className="text-slate-500 font-medium text-sm">Choose all technical functionalities required.</p>
+                           </div>
+                           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                             {Object.entries(websitePricing.features).map(([f, p]) => (
+                               <AddonButton key={f} label={f} price={p} selections={selections.addons} toggle={toggleAddon} />
+                             ))}
+                           </div>
+                           <button onClick={nextStep} className="w-full bg-primary text-white p-6 rounded-[2rem] font-black shadow-xl shadow-primary/20 hover:scale-[1.01] transition-all">CONTINUE</button>
+                        </div>
+                      )}
+                      {step === 5 && (
+                        <LogoQuestion 
+                          label="Content readiness" 
+                          sub="Do you have the text and media ready?"
+                          options={Object.keys(websitePricing.contentStatus)} 
+                          prices={Object.values(websitePricing.contentStatus)}
+                          current={selections.details.contentStatus} 
+                          onSelect={(v: any) => { updateDetail("contentStatus", v); nextStep(); }} 
+                        />
+                      )}
+                      {step === 6 && (
+                        <LogoQuestion 
+                          label="Branding status" 
+                          sub="Do you have an established brand identity?"
+                          options={Object.keys(websitePricing.brandingStatus)} 
+                          prices={Object.values(websitePricing.brandingStatus)}
+                          current={selections.details.brandingStatus} 
+                          onSelect={(v: any) => { updateDetail("brandingStatus", v); nextStep(); }} 
+                        />
+                      )}
+                      {step === 7 && (
+                        <LogoQuestion 
+                          label="Timeline urgency" 
+                          sub="When do you need the site launched?"
+                          options={Object.keys(websitePricing.urgency)} 
+                          prices={Object.values(websitePricing.urgency)}
+                          current={selections.details.urgency} 
+                          onSelect={(v: any) => { updateDetail("urgency", v); nextStep(); }} 
+                        />
+                      )}
+                      {step === 8 && (
+                        <LogoQuestion 
+                          label="Maintenance" 
+                          sub="How will you handle updates after launch?"
+                          options={Object.keys(websitePricing.maintenance)} 
+                          prices={Object.values(websitePricing.maintenance)}
+                          current={selections.details.maintenance} 
+                          onSelect={(v: any) => { updateDetail("maintenance", v); setStep(10); }} 
+                        />
+                      )}
+                   </motion.div>
+                )}
+
+                {/* FALLBACK FOR OTHER SERVICES */}
+               {step >= 2 && step < 10 && selections.serviceId !== "website" && !["Logo Design", "Company Profile", "Social Media Design", "Website Banner", "Product Mockup", "Stationery Design"].includes(selections.subService!) && (
                  <motion.div key="other-details" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }}>
                     <button onClick={prevStep} className="inline-flex items-center gap-2 text-primary font-bold text-sm mb-12"><ChevronLeft size={18} /> Back</button>
                     <div className="text-center py-20">
@@ -843,67 +1024,119 @@ export default function CalculatorModal({ isOpen, onClose }: { isOpen: boolean; 
               )}
 
               {/* SUMMARY SCREEN */}
-              {step === 10 && (
-                <motion.div key="summary" initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="pt-4">
-                  <div className="text-center mb-10">
-                     <div className="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <Check size={32} className="text-emerald-500" />
-                     </div>
-                     <h2 className="text-3xl font-black text-slate-900 mb-1">Your Total Estimate</h2>
-                     <p className="text-slate-500 font-bold text-sm">Professional Digital Package</p>
-                  </div>
+              {step === 10 && (() => {
+                const isWebsite = selections.serviceId === "website";
+                
+                const getWebsiteDelivery = () => {
+                  let minW = 2;
+                  if (selections.details.pageRange === "6–15 pages") minW += 1;
+                  if (selections.details.pageRange === "16–30 pages") minW += 2;
+                  if (selections.details.pageRange === "30+ pages") minW += 4;
+                  if (selections.addons.length > 3) minW += 1;
+                  if (selections.details.contentStatus !== "I have all content ready") minW += 1;
+                  
+                  if (selections.details.urgency === "Urgent / ASAP") return "2–3 weeks (Express)";
+                  if (selections.details.urgency === "2–4 weeks") return "2–4 weeks (Fast)";
+                  return `${minW}–${minW + 2} weeks`;
+                };
 
-                  <div className="bg-slate-50 rounded-[2.5rem] p-10 border border-slate-100 mb-10 relative group overflow-hidden">
-                    <div className="absolute top-0 right-0 p-10 opacity-5 group-hover:scale-110 transition-transform"><Calculator size={100} /></div>
-                    
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-12 mb-10 pb-10 border-b border-slate-200">
-                       <div>
-                         <p className="text-[10px] uppercase tracking-[0.2em] font-black text-slate-400 mb-4">{isFixed ? "Final Selection" : "Sub-Service"}</p>
-                         <h4 className="text-2xl font-black text-slate-900 leading-tight">{selections.subService}</h4>
-                         <div className="mt-6 flex items-center gap-2">
-                            <span className="w-3 h-3 bg-primary rounded-full animate-pulse" />
-                            <span className="text-sm font-black text-slate-700">{isFixed ? "Fixed Total Price" : "Calculated Range"}</span>
-                         </div>
+                const getWebsitePackage = () => {
+                  if (min > 15000) return "Enterprise Custom Solution";
+                  if (min > 8000) return "Professional Business Suite";
+                  if (min > 4000) return "Standard Performance Plan";
+                  return "Entry-Level Startup Launch";
+                };
+
+                return (
+                  <motion.div key="summary" initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="pt-4">
+                    <div className="text-center mb-10">
+                       <div className="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                          <Check size={32} className="text-emerald-500" />
                        </div>
-                       <div className="md:text-right">
-                         <p className="text-[10px] uppercase tracking-[0.2em] font-black text-slate-400 mb-4">{isFixed ? "Total Investment" : "Estimated Investment"}</p>
-                         <h4 className="text-5xl font-black text-primary leading-none">
-                            {min} <span className="text-lg">AED</span>
-                         </h4>
-                         <p className="text-[10px] text-slate-400 font-bold mt-4">Transparent and comprehensive pricing*</p>
-                       </div>
+                       <h2 className="text-3xl font-black text-slate-900 mb-1">Your Total Estimate</h2>
+                       <p className="text-slate-500 font-bold text-sm">
+                         {isWebsite ? getWebsitePackage() : "Professional Digital Package"}
+                       </p>
                     </div>
 
-                    <div className="space-y-4">
-                       <p className="text-[10px] uppercase tracking-[0.2em] font-black text-slate-400 mb-4">Selected Options Breakdown</p>
-                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-12 gap-y-4">
-                         {Object.entries(selections.details).map(([k, v]) => (
-                           <div key={k} className="flex justify-between items-center text-sm font-bold border-b border-white pb-2">
-                             <span className="text-slate-400 capitalize">{k.replace(/([A-Z])/g, ' $1')}</span>
-                             <span className="text-slate-900">{v as string}</span>
+                    <div className="bg-slate-50 rounded-[2.5rem] p-10 border border-slate-100 mb-10 relative group overflow-hidden">
+                      <div className="absolute top-0 right-0 p-10 opacity-5 group-hover:scale-110 transition-transform"><Calculator size={100} /></div>
+                      
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-12 mb-10 pb-10 border-b border-slate-200">
+                         <div>
+                           <p className="text-[10px] uppercase tracking-[0.2em] font-black text-slate-400 mb-4">{isWebsite ? "Project Type" : "Sub-Service"}</p>
+                           <h4 className="text-2xl font-black text-slate-900 leading-tight">{selections.subService}</h4>
+                           <div className="mt-6 flex flex-col gap-2">
+                              <div className="flex items-center gap-2">
+                                <span className="w-3 h-3 bg-primary rounded-full animate-pulse" />
+                                <span className="text-sm font-black text-slate-700">{isFixed ? "Fixed Total Price" : "Calculated Range"}</span>
+                              </div>
+                              {isWebsite && (
+                                <div className="flex items-center gap-2">
+                                  <Rocket size={14} className="text-emerald-500" />
+                                  <span className="text-xs font-bold text-slate-500">Delivery: {getWebsiteDelivery()}</span>
+                                </div>
+                              )}
                            </div>
-                         ))}
-                       </div>
-                    </div>
-                  </div>
+                         </div>
+                         <div className="md:text-right">
+                           <p className="text-[10px] uppercase tracking-[0.2em] font-black text-slate-400 mb-4">{isFixed ? "Total Investment" : "Estimated Investment"}</p>
+                           <h4 className="text-5xl font-black text-primary leading-none">
+                              {min} <span className="text-lg">AED</span>
+                           </h4>
+                           <p className="text-[10px] text-slate-400 font-bold mt-4">Transparent and comprehensive pricing*</p>
+                         </div>
+                      </div>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <button className="bg-primary text-white p-6 rounded-[2rem] font-black flex items-center justify-center gap-3 hover:scale-[1.02] active:scale-95 transition-all shadow-xl shadow-primary/20">
-                       START PROJECT <Rocket size={20} />
-                    </button>
-                    <Link 
-                      href="/contact"
-                      onClick={onClose}
-                      className="bg-slate-950 text-white p-6 rounded-[2rem] font-black flex items-center justify-center gap-3 hover:bg-slate-800 transition-colors"
-                    >
-                       CUSTOM QUOTE <Mail size={20} />
-                    </Link>
-                    <button className="bg-emerald-500 text-white p-6 rounded-[2rem] font-black flex items-center justify-center gap-3 hover:scale-[1.02] active:scale-95 transition-all col-span-full shadow-emerald-500/20 shadow-xl">
-                       CHAT ON WHATSAPP <MessageSquare size={20} />
-                    </button>
-                  </div>
-                </motion.div>
-              )}
+                      <div className="space-y-6">
+                         <p className="text-[10px] uppercase tracking-[0.2em] font-black text-slate-400">Selected Options Breakdown</p>
+                         
+                         {isWebsite ? (
+                           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                              <ResultCategory label="Concept & Design" value={selections.details.designLevel} />
+                              <ResultCategory label="Build & Scale" value={selections.details.pageRange} />
+                              <ResultCategory label="Content & Assets" value={selections.details.contentStatus} />
+                              <ResultCategory label="Deployment" value={selections.details.urgency} />
+                              <div className="col-span-full pt-4 border-t border-white">
+                                <p className="text-[9px] uppercase font-black text-slate-400 mb-2">Technical Features Included:</p>
+                                <div className="flex flex-wrap gap-2">
+                                  {selections.addons.length > 0 ? selections.addons.map(a => (
+                                    <span key={a} className="px-3 py-1 bg-white border border-slate-100 rounded-full text-[10px] font-bold text-slate-600">{a}</span>
+                                  )) : <span className="text-xs text-slate-300 italic">No additional features selected</span>}
+                                </div>
+                              </div>
+                           </div>
+                         ) : (
+                           <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-12 gap-y-4">
+                             {Object.entries(selections.details).map(([k, v]) => (
+                               <div key={k} className="flex justify-between items-center text-sm font-bold border-b border-white pb-2">
+                                 <span className="text-slate-400 capitalize">{k.replace(/([A-Z])/g, ' $1')}</span>
+                                 <span className="text-slate-900">{v as string}</span>
+                               </div>
+                             ))}
+                           </div>
+                         )}
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <button className="bg-primary text-white p-6 rounded-[2rem] font-black flex items-center justify-center gap-3 hover:scale-[1.02] active:scale-95 transition-all shadow-xl shadow-primary/20">
+                         START PROJECT <Rocket size={20} />
+                      </button>
+                      <Link 
+                        href="/contact"
+                        onClick={onClose}
+                        className="bg-slate-950 text-white p-6 rounded-[2rem] font-black flex items-center justify-center gap-3 hover:bg-slate-800 transition-colors"
+                      >
+                         CUSTOM QUOTE <Mail size={20} />
+                      </Link>
+                      <button className="bg-emerald-500 text-white p-6 rounded-[2rem] font-black flex items-center justify-center gap-3 hover:scale-[1.02] active:scale-95 transition-all col-span-full shadow-emerald-500/20 shadow-xl">
+                         CHAT ON WHATSAPP <MessageSquare size={20} />
+                      </button>
+                    </div>
+                  </motion.div>
+                );
+              })()}
             </AnimatePresence>
           </div>
 
@@ -1019,7 +1252,7 @@ function getSubServices(serviceId: ServiceID): string[] {
   switch (serviceId) {
     case "graphic": return ["Logo Design", "Company Profile", "Social Media Design", "Website Banner", "Product Mockup", "Stationery Design"];
     case "marketing": return ["Google Ads", "Meta Ads", "TikTok Ads", "SEO", "YouTube Ads", "Email Marketing"];
-    case "website": return ["Restaurant", "Real Estate", "E-commerce", "Corporate", "Clinic", "Salon", "Education", "Travel", "Portfolio", "Other"];
+    case "website": return ["Business website", "Ecommerce store", "Portfolio", "Landing page", "Web app", "Blog/news site"];
     case "smm": return ["Instagram", "Facebook", "LinkedIn", "TikTok", "YouTube"];
     default: return [];
   }
@@ -1045,5 +1278,14 @@ function AddonButton({ label, price, selections, toggle }: any) {
         {isSelected ? <Check size={20} /> : <Plus size={20} />}
       </div>
     </button>
+  );
+}
+
+function ResultCategory({ label, value }: { label: string, value: string }) {
+  return (
+    <div className="flex flex-col gap-1 border-b border-white pb-3">
+      <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{label}</span>
+      <span className="text-sm font-bold text-slate-900">{value || "Included/Not Selected"}</span>
+    </div>
   );
 }
