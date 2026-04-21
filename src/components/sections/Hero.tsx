@@ -4,8 +4,11 @@ import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowRight, Play, Loader2, Calculator } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
+import dynamic from "next/dynamic";
 import { SiteConfig } from "@/lib/siteConfig";
-import CalculatorModal from "../calculator/CalculatorModal";
+
+const CalculatorModal = dynamic(() => import("../calculator/CalculatorModal"), { ssr: false });
 
 export default function Hero() {
   const [config, setConfig] = useState<SiteConfig | null>(null);
@@ -78,10 +81,13 @@ export default function Hero() {
           className="relative"
         >
           <div className="aspect-[4/5] rounded-[4rem] overflow-hidden bg-slate-100 shadow-2xl relative z-10 border-8 border-white group">
-            <img 
+            <Image 
                src={displayConfig.home.heroImage} 
                alt="Digital Innovation" 
-               className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" 
+               fill
+               className="object-cover transition-transform duration-700 group-hover:scale-110" 
+               priority
+               sizes="(max-width: 768px) 100vw, 50vw"
             />
           </div>
           {/* Floating cards */}

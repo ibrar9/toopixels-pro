@@ -11,6 +11,10 @@ export default function Contact() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!formData.name.trim() || !formData.email.trim() || !formData.phone.trim()) {
+      alert("Please fill in all required fields (Name, Email, and Phone).");
+      return;
+    }
     setLoading(true);
     try {
       await fetch('/api/inquiries', {
@@ -97,7 +101,7 @@ export default function Contact() {
                 <form onSubmit={handleSubmit} className="space-y-6">
                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <div className="space-y-2">
-                         <label className="text-sm font-bold ml-2">Full Name</label>
+                         <label className="text-sm font-bold ml-2">Full Name <span className="text-primary">*</span></label>
                          <input 
                            type="text" 
                            placeholder="John Doe" 
@@ -108,7 +112,7 @@ export default function Contact() {
                          />
                       </div>
                       <div className="space-y-2">
-                         <label className="text-sm font-bold ml-2">Email Address</label>
+                         <label className="text-sm font-bold ml-2">Email Address <span className="text-primary">*</span></label>
                          <input 
                            type="email" 
                            placeholder="john@example.com" 
@@ -120,7 +124,7 @@ export default function Contact() {
                       </div>
                    </div>
                    <div className="space-y-2">
-                       <label className="text-sm font-bold ml-2">Phone Number</label>
+                       <label className="text-sm font-bold ml-2">Phone Number <span className="text-primary">*</span></label>
                        <input 
                          type="tel" 
                          placeholder="+971 00 000 0000" 
@@ -142,7 +146,7 @@ export default function Contact() {
                        ></textarea>
                    </div>
                    <button type="submit" disabled={loading} className="w-full bg-slate-900 text-white p-6 rounded-3xl font-bold flex items-center justify-center gap-3 hover:bg-primary transition-all shadow-xl shadow-slate-100 disabled:opacity-50">
-                      {loading ? <Loader2 className="animate-spin" /> : <>Track Project Request <Send size={20} /></>}
+                      {loading ? <Loader2 className="animate-spin" /> : <>Send now <Send size={20} /></>}
                    </button>
                 </form>
                )}

@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import { ArrowRight, Plus } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
 
 const projects = [
   { title: "Brand Identity", category: "Graphic Design", image: "https://images.unsplash.com/photo-1541462608141-ad4d0b942085?auto=format&fit=crop&q=80&w=2426" },
@@ -31,11 +32,13 @@ export default function PortfolioPreview() {
               viewport={{ once: true }}
               className="relative group cursor-pointer"
             >
-              <div className="aspect-[4/5] rounded-[2.5rem] overflow-hidden bg-slate-100">
-                <img 
+              <div className="aspect-[4/5] rounded-[2.5rem] overflow-hidden bg-slate-100 relative">
+                <Image 
                   src={project.image} 
                   alt={project.title} 
-                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" 
+                  fill
+                  className="object-cover transition-transform duration-700 group-hover:scale-110" 
+                  sizes="(max-width: 768px) 100vw, 33vw"
                 />
               </div>
               <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 to-transparent p-10 flex flex-col justify-end opacity-0 group-hover:opacity-100 transition-opacity duration-300">

@@ -16,3 +16,11 @@ export async function POST(request: Request) {
   });
   return NextResponse.json(newInquiry);
 }
+
+export async function PATCH(request: Request) {
+  const body = await request.json();
+  const { id, read } = body;
+  const { updateInquiry } = await import('@/lib/store');
+  const updated = await updateInquiry(id, { read });
+  return NextResponse.json(updated);
+}

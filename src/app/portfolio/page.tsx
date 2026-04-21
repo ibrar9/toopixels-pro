@@ -1,7 +1,8 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import Image from "next/image";
 import { ArrowUpRight, Loader2 } from "lucide-react";
 import { Project } from "@/lib/db";
 
@@ -36,11 +37,13 @@ export default function Portfolio() {
   const primaryCategories = config?.portfolioCategories ? ["All", ...Object.keys(config.portfolioCategories)] : ["All"];
   const subCategories = config?.portfolioCategories || {};
 
-  const filteredItems = projects.filter(item => {
-    const matchesPrimary = filter === "All" || item.category === filter;
-    const matchesSub = subFilter === "All" || item.subCategory === subFilter;
-    return matchesPrimary && matchesSub;
-  });
+  const filteredItems = useMemo(() => {
+    return projects.filter(item => {
+      const matchesPrimary = filter === "All" || item.category === filter;
+      const matchesSub = subFilter === "All" || item.subCategory === subFilter;
+      return matchesPrimary && matchesSub;
+    });
+  }, [projects, filter, subFilter]);
 
   const activeSubcats = filter !== "All" ? subCategories[filter as keyof typeof subCategories] || [] : [];
 
@@ -57,7 +60,8 @@ export default function Portfolio() {
 
       <section className="section-padding bg-white min-h-screen">
          <div className="max-w-7xl mx-auto px-6">
-             <div className="flex flex-wrap justify-center gap-3 mb-8">
+             {/* Primary Categories - Premium Pill Navigation */}
+             <div className="flex flex-wrap justify-center gap-4 mb-12">
                 {primaryCategories.map((cat, i) => (
                   <button
                     key={i}
@@ -65,29 +69,44 @@ export default function Portfolio() {
                        setFilter(cat);
                        setSubFilter("All");
                     }}
-                    className={`px-8 py-3 rounded-full font-bold text-sm transition-all ${filter === cat ? 'bg-primary text-white shadow-xl shadow-primary/20' : 'bg-slate-100 text-slate-500 hover:bg-slate-200'}`}
+                    className={`relative px-10 py-4 rounded-full font-black text-xs uppercase tracking-[0.2em] transition-all duration-500 overflow-hidden ${filter === cat ? 'bg-primary text-white shadow-2xl shadow-primary/40 -translate-y-1' : 'bg-slate-50 text-slate-400 hover:bg-slate-100'}`}
                   >
-                    {cat}
+                    <span className="relative z-10">{cat}</span>
+                    {filter === cat && (
+                      <motion.div layoutId="activeCat" className="absolute inset-0 bg-primary z-0" />
+                    )}
                   </button>
                 ))}
              </div>
 
-             {activeSubcats.length > 0 && (
-               <div className="flex flex-wrap justify-center gap-2 mb-20 animate-in fade-in slide-in-from-top-2 duration-500">
-                  <button onClick={() => setSubFilter("All")} className={`px-5 py-2 rounded-full text-xs font-black uppercase tracking-widest transition-all ${subFilter === "All" ? 'bg-slate-900 text-white' : 'bg-slate-50 text-slate-400 hover:bg-slate-100'}`}>
-                    View All
-                  </button>
-                  {activeSubcats.map((sub: string) => (
-                    <button
-                      key={sub}
-                      onClick={() => setSubFilter(sub)}
-                      className={`px-5 py-2 rounded-full text-xs font-black uppercase tracking-widest transition-all ${subFilter === sub ? 'bg-slate-900 text-white shadow-lg' : 'bg-slate-50 text-slate-400 hover:bg-slate-100'}`}
+             {/* Sub Categories - Animated Glass Bar */}
+             <AnimatePresence mode="wait">
+               {activeSubcats.length > 0 && (
+                 <motion.div 
+                   initial={{ opacity: 0, y: 10 }}
+                   animate={{ opacity: 1, y: 0 }}
+                   exit={{ opacity: 0, y: -10 }}
+                   className="flex flex-wrap justify-center items-center gap-3 mb-20 p-2 bg-slate-50/50 backdrop-blur rounded-[2rem] border border-slate-100 max-w-fit mx-auto"
+                 >
+                    <button 
+                      onClick={() => setSubFilter("All")} 
+                      className={`px-8 py-3 rounded-[1.5rem] text-[10px] font-black uppercase tracking-widest transition-all duration-300 ${subFilter === "All" ? 'bg-slate-900 text-white shadow-lg' : 'text-slate-400 hover:text-slate-900'}`}
                     >
-                      {sub}
+                      All Works
                     </button>
-                  ))}
-               </div>
-             )}
+                    <div className="w-px h-6 bg-slate-200 mx-2 hidden sm:block" />
+                    {activeSubcats.map((sub: string) => (
+                      <button
+                        key={sub}
+                        onClick={() => setSubFilter(sub)}
+                        className={`px-8 py-3 rounded-[1.5rem] text-[10px] font-black uppercase tracking-widest transition-all duration-300 ${subFilter === sub ? 'bg-slate-900 text-white shadow-lg' : 'text-slate-400 hover:text-slate-900'}`}
+                      >
+                        {sub}
+                      </button>
+                    ))}
+                 </motion.div>
+               )}
+             </AnimatePresence>
 
             {loading ? (
               <div className="flex justify-center py-20">
@@ -107,8 +126,14 @@ export default function Portfolio() {
                        className="group relative cursor-pointer"
                        onClick={() => setSelectedProject(item)}
                     >
-                        <div className="aspect-[4/3] rounded-[2rem] overflow-hidden bg-slate-100 mb-6 border border-slate-50 shadow-sm">
-                          <img src={item.image} alt={item.title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
+                        <div className="aspect-[4/3] rounded-[2rem] overflow-hidden bg-slate-100 mb-6 border border-slate-50 shadow-sm relative">
+                          <Image 
+                            src={item.image} 
+                            alt={item.title} 
+                            fill 
+                            className="object-cover transition-transform duration-700 group-hover:scale-110" 
+                            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                          />
                         </div>
                         <div className="flex items-center justify-between px-2">
                           <div>
@@ -132,10 +157,14 @@ export default function Portfolio() {
                <button onClick={() => setSelectedProject(null)} className="absolute top-8 right-8 z-50 bg-white/80 backdrop-blur px-6 py-3 rounded-full font-black text-xs shadow-xl border hover:bg-white transition-all">CLOSE VIEW</button>
                
                <div className="w-full md:w-3/5 bg-slate-50 overflow-y-auto p-8 custom-scrollbar">
-                  <img src={selectedProject.image} className="w-full rounded-2xl mb-6 shadow-2xl" alt={selectedProject.title} />
+                  <div className="relative w-full aspect-video rounded-2xl mb-6 shadow-2xl overflow-hidden">
+                    <Image src={selectedProject.image} fill className="object-cover" alt={selectedProject.title} />
+                  </div>
                   <div className="grid grid-cols-1 gap-6">
                     {selectedProject.gallery?.map((img, i) => (
-                      <img key={i} src={img} className="w-full rounded-2xl shadow-lg" alt={`View ${i + 1}`} />
+                      <div key={i} className="relative w-full aspect-video rounded-2xl shadow-lg overflow-hidden">
+                        <Image src={img} fill className="object-cover" alt={`View ${i + 1}`} />
+                      </div>
                     ))}
                   </div>
                </div>

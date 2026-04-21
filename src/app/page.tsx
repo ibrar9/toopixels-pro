@@ -2,6 +2,7 @@ import Hero from "@/components/sections/Hero";
 import Stats from "@/components/sections/Stats";
 import ServicesPreview from "@/components/sections/ServicesPreview";
 import PortfolioPreview from "@/components/sections/PortfolioPreview";
+import Image from "next/image";
 
 export default function Home() {
   return (
@@ -12,8 +13,8 @@ export default function Home() {
       <section className="section-padding bg-white">
         <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
           <div className="relative">
-            <div className="aspect-square bg-slate-100 rounded-[3rem] overflow-hidden rotate-3 scale-95 border-8 border-white shadow-2xl">
-              <img src="https://images.unsplash.com/photo-1542744173-8e7e53415bb0?auto=format&fit=crop&q=80&w=2426" alt="Agency Culture" className="w-full h-full object-cover" />
+            <div className="aspect-square bg-slate-100 rounded-[3rem] overflow-hidden rotate-3 scale-95 border-8 border-white shadow-2xl relative">
+              <Image src="https://images.unsplash.com/photo-1542744173-8e7e53415bb0?auto=format&fit=crop&q=80&w=2426" alt="Agency Culture" fill className="object-cover" />
             </div>
           </div>
           <div>

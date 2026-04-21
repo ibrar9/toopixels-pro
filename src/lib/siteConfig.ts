@@ -18,6 +18,7 @@ export interface SiteConfig {
     address: string;
   };
   portfolioCategories: Record<string, string[]>;
+  blogCategories: string[];
 }
 
 export const defaultSiteConfig: SiteConfig = {
@@ -49,5 +50,6 @@ export const defaultSiteConfig: SiteConfig = {
     "Branding": ["Full Branding Package", "Brand Identity", "Brand Guidelines"],
     "Website Development": ["E-commerce", "Corporate", "Portfolio", "Landing Page", "Web App"],
     "Digital Marketing": ["SEO", "Google Ads", "Meta Ads", "Email Campaigns"]
-  }
+  },
+  blogCategories: ["Technology", "Design", "Tutorial", "Agency News", "Marketing"]
 };

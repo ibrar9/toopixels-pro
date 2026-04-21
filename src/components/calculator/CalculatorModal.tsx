@@ -6,7 +6,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { 
   X, ChevronRight, ChevronLeft, Check, Calculator, 
   Palette, Megaphone, Globe, Share2, ArrowRight,
-  MessageSquare, Mail, Award, Rocket, Plus, Minus
+  MessageSquare, Mail, Award, Rocket, Plus, Minus, Loader2
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -146,6 +146,35 @@ export default function CalculatorModal({ isOpen, onClose }: { isOpen: boolean; 
     details: {},
     addons: []
   });
+
+  const [orderForm, setOrderForm] = useState({ name: "", email: "", phone: "" });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [orderSuccess, setOrderSuccess] = useState(false);
+
+  const handleOrderSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    const { min, max } = calculateEstimate();
+    const orderData = {
+      ...orderForm,
+      service: selections.serviceId,
+      subService: selections.subService,
+      details: selections.details,
+      totalEstimate: min,
+    };
+
+    try {
+      await fetch('/api/orders', {
+        method: 'POST',
+        body: JSON.stringify(orderData)
+      });
+      setOrderSuccess(true);
+    } catch (err) {
+      alert("Submission failed. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   const nextStep = () => setStep(prev => prev + 1);
   const prevStep = () => setStep(prev => prev - 1);
@@ -1146,7 +1175,7 @@ export default function CalculatorModal({ isOpen, onClose }: { isOpen: boolean; 
                     </div>
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                      <button className="bg-primary text-white p-6 rounded-[2rem] font-black flex items-center justify-center gap-3 hover:scale-[1.02] active:scale-95 transition-all shadow-xl shadow-primary/20">
+                      <button onClick={() => setStep(11)} className="bg-primary text-white p-6 rounded-[2rem] font-black flex items-center justify-center gap-3 hover:scale-[1.02] active:scale-95 transition-all shadow-xl shadow-primary/20">
                          START PROJECT <Rocket size={20} />
                       </button>
                       <Link 
@@ -1156,13 +1185,80 @@ export default function CalculatorModal({ isOpen, onClose }: { isOpen: boolean; 
                       >
                          CUSTOM QUOTE <Mail size={20} />
                       </Link>
-                      <button className="bg-emerald-500 text-white p-6 rounded-[2rem] font-black flex items-center justify-center gap-3 hover:scale-[1.02] active:scale-95 transition-all col-span-full shadow-emerald-500/20 shadow-xl">
+                      <a 
+                        href="https://wa.me/971556721324" 
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="bg-emerald-500 text-white p-6 rounded-[2rem] font-black flex items-center justify-center gap-3 hover:scale-[1.02] active:scale-95 transition-all col-span-full shadow-emerald-500/20 shadow-xl"
+                      >
                          CHAT ON WHATSAPP <MessageSquare size={20} />
-                      </button>
+                      </a>
                     </div>
                   </motion.div>
                 );
               })()}
+
+               {/* NEW STEP 11: CONTACT FORM FOR LEAD CAPTURE */}
+               {step === 11 && (
+                 <motion.div key="order-form" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
+                   <button onClick={() => setStep(10)} className="inline-flex items-center gap-2 text-primary font-bold text-sm mb-12 hover:translate-x-[-4px] transition-transform">
+                     <ChevronLeft size={18} /> Back to Estimate
+                   </button>
+
+                   {orderSuccess ? (
+                      <div className="text-center py-20 text-slate-900 font-bold">
+                         <div className="w-20 h-20 bg-emerald-100 text-emerald-500 rounded-full flex items-center justify-center mx-auto mb-6">
+                            <Check size={48} />
+                         </div>
+                         <h3 className="text-3xl font-black mb-4">Request Received!</h3>
+                         <p className="text-slate-500 font-medium text-lg mb-10">Our team has received your concept and estimate. We'll contact you shortly to start the project.</p>
+                         <button onClick={onClose} className="bg-slate-900 text-white px-10 py-5 rounded-2xl font-bold">CLOSE CALCULATOR</button>
+                      </div>
+                   ) : (
+                      <div className="max-w-md mx-auto">
+                        <div className="mb-10 text-center">
+                          <h2 className="text-4xl font-black text-slate-900 mb-2">Final Step</h2>
+                          <p className="text-slate-500 font-medium tracking-tight uppercase text-xs">Share your details to lock in this estimate.</p>
+                        </div>
+                        <form onSubmit={handleOrderSubmit} className="space-y-4">
+                           <input 
+                              type="text" 
+                              placeholder="Your Full Name *" 
+                              className="w-full p-5 rounded-2xl bg-slate-50 border-2 border-slate-50 focus:border-primary outline-none font-bold text-slate-900"
+                              required
+                              value={orderForm.name}
+                              onChange={e => setOrderForm({...orderForm, name: e.target.value})}
+                           />
+                           <input 
+                              type="email" 
+                              placeholder="Work Email Address *" 
+                              className="w-full p-5 rounded-2xl bg-slate-50 border-2 border-slate-50 focus:border-primary outline-none font-bold text-slate-900"
+                              required
+                              value={orderForm.email}
+                              onChange={e => setOrderForm({...orderForm, email: e.target.value})}
+                           />
+                           <input 
+                              type="tel" 
+                              placeholder="Phone Number (WhatsApp) *" 
+                              className="w-full p-5 rounded-2xl bg-slate-50 border-2 border-slate-50 focus:border-primary outline-none font-bold text-slate-900"
+                              required
+                              value={orderForm.phone}
+                              onChange={e => setOrderForm({...orderForm, phone: e.target.value})}
+                           />
+                           <div className="pt-6">
+                              <button 
+                                type="submit" 
+                                disabled={isSubmitting}
+                                className="w-full bg-primary text-white p-6 rounded-[2rem] font-black shadow-xl shadow-primary/20 hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-3 disabled:opacity-50"
+                              >
+                                {isSubmitting ? <Loader2 className="animate-spin" /> : <>FINALIZE PROJECT REQUEST <ArrowRight size={20}/></>}
+                              </button>
+                           </div>
+                        </form>
+                      </div>
+                   )}
+                 </motion.div>
+               )}
             </AnimatePresence>
           </div>
 

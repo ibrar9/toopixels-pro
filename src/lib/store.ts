@@ -56,6 +56,7 @@ export async function getConfig() {
   const data = await getData();
   return data.config || defaultSiteConfig;
 }
+
 export async function addInquiry(inquiry: Inquiry) {
   const data = await getData();
   if (!data.inquiries) data.inquiries = [];
@@ -67,4 +68,45 @@ export async function addInquiry(inquiry: Inquiry) {
 export async function getInquiries() {
   const data = await getData();
   return data.inquiries || [];
+}
+
+export async function updateInquiry(id: string, updates: Partial<Inquiry>) {
+  const data = await getData();
+  const index = data.inquiries.findIndex((inq: Inquiry) => inq.id === id);
+  if (index !== -1) {
+    data.inquiries[index] = { ...data.inquiries[index], ...updates };
+    await saveData(data);
+    return data.inquiries[index];
+  }
+  return null;
+}
+
+export async function addOrder(order: any) {
+  const data = await getData();
+  if (!data.orders) data.orders = [];
+  data.orders.push(order);
+  await saveData(data);
+  return order;
+}
+
+export async function getOrders() {
+  const data = await getData();
+  return data.orders || [];
+}
+
+export async function updateOrder(id: string, updates: any) {
+  const data = await getData();
+  const index = data.orders.findIndex((o: any) => o.id === id);
+  if (index !== -1) {
+    data.orders[index] = { ...data.orders[index], ...updates };
+    await saveData(data);
+    return data.orders[index];
+  }
+  return null;
+}
+export async function deleteOrder(id: string) {
+  const data = await getData();
+  data.orders = (data.orders || []).filter((o: any) => o.id !== id);
+  await saveData(data);
+  return true;
 }

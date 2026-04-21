@@ -6,7 +6,9 @@ import { usePathname } from "next/navigation";
 import { Menu, X, ArrowRight, Calculator } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
-import CalculatorModal from "../calculator/CalculatorModal";
+import dynamic from "next/dynamic";
+
+const CalculatorModal = dynamic(() => import("../calculator/CalculatorModal"), { ssr: false });
 
 const navLinks = [
   { name: "Home", href: "/" },

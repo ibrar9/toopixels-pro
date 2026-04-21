@@ -39,6 +39,19 @@ export interface Inquiry {
   read: boolean;
 }
 
+export interface ProjectOrder {
+  id: string;
+  name: string;
+  email: string;
+  phone: string;
+  service: string;
+  subService: string;
+  details: Record<string, string>;
+  totalEstimate: number;
+  date: string;
+  status: 'pending' | 'reviewed' | 'contacted';
+}
+
 // Initial Mock Data
 export const mockProjects: Project[] = [
   {
