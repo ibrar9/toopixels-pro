@@ -51,7 +51,7 @@ export default function Hero() {
           </h1>
           
           <p className="text-xl text-muted-foreground mb-12 max-w-lg leading-relaxed font-medium">
-            {displayConfig.home.heroSubtitle}
+            The leading choice for premium digital solutions in <b>Dubai, Abu Dhabi, and across the UAE</b>. Transforming brands since 2018.
           </p>
 
           <div className="flex flex-col sm:flex-row gap-6">
