@@ -28,7 +28,7 @@ export default function AdminDashboard() {
   });
 
   // Blog Form State
-  const [blogData, setBlogData] = useState({ title: "", category: "Technology", excerpt: "", image: "https://images.unsplash.com/photo-1542744173-8e7e53415bb0?auto=format" });
+  const [blogData, setBlogData] = useState({ title: "", category: "Technology", excerpt: "", content: "", image: "https://images.unsplash.com/photo-1542744173-8e7e53415bb0?auto=format" });
 
   // Blogs State
   const [blogs, setBlogs] = useState<any[]>([]);
