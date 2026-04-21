@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { ArrowRight, Play, Loader2, Calculator } from "lucide-react";
+import { AnimatePresence } from "framer-motion";
+import { ArrowRight, Calculator } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import dynamic from "next/dynamic";
@@ -40,11 +40,7 @@ export default function Hero() {
       <div className="absolute bottom-0 left-0 translate-y-1/2 -translate-x-1/4 w-[600px] h-[600px] bg-red-500/5 rounded-full blur-[100px]" />
       
       <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center relative z-10">
-        <motion.div 
-          initial={{ opacity: 0, x: -50 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.8 }}
-        >
+        <div>
           <div className="inline-flex items-center gap-2 px-4 py-2 bg-slate-50 border rounded-full text-sm font-bold text-slate-600 mb-8">
             <span className="w-2 h-2 bg-primary rounded-full animate-pulse" />
             Leading Digital Agency in Dubai
@@ -71,14 +67,9 @@ export default function Hero() {
               <Calculator size={20} /> Cost Calculator
             </button>
           </div>
-        </motion.div>
+        </div>
 
-        <motion.div 
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 1 }}
-          className="relative"
-        >
+        <div className="relative">
           <div className="aspect-[4/5] rounded-[4rem] overflow-hidden bg-slate-100 shadow-2xl relative z-10 border-8 border-white group">
             <Image 
                src={displayConfig.home.heroImage} 
@@ -94,7 +85,7 @@ export default function Hero() {
              <p className="font-bold text-2xl">99%</p>
              <p className="text-sm text-muted-foreground">Satisfaction</p>
           </div>
-        </motion.div>
+        </div>
       </div>
     </section>
     <AnimatePresence>
