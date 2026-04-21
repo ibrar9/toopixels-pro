@@ -1,7 +1,4 @@
-"use client";
-
-import { motion } from "framer-motion";
-import { Palette, Rocket, Globe, Share2, Code2, ArrowRight } from "lucide-react";
+import { Palette, Rocket, Globe, Share2, ArrowRight } from "lucide-react";
 import Link from "next/link";
 
 const services = [
@@ -50,12 +47,8 @@ export default function ServicesPreview() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {services.map((service, i) => (
-            <motion.div
+            <div
               key={i}
-              initial={{ opacity: 0, scale: 0.95 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              transition={{ delay: i * 0.1 }}
-              viewport={{ once: true }}
               className="bg-white p-8 rounded-[2rem] shadow-sm hover:shadow-xl transition-all border group"
             >
               <div className={`w-14 h-14 rounded-2xl ${service.color} flex items-center justify-center mb-6 group-hover:scale-110 transition-transform`}>
@@ -66,7 +59,7 @@ export default function ServicesPreview() {
               <Link href="/services" className="text-primary text-xs font-bold uppercase tracking-widest flex items-center gap-2 group-hover:gap-3 transition-all">
                 Learn More <ArrowRight size={14} />
               </Link>
-            </motion.div>
+            </div>
           ))}
         </div>
       </div>

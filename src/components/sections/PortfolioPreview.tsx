@@ -1,6 +1,3 @@
-"use client";
-
-import { motion } from "framer-motion";
 import { ArrowRight, Plus } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
@@ -18,18 +15,14 @@ export default function PortfolioPreview() {
         <div className="text-center max-w-2xl mx-auto mb-20">
           <h2 className="heading-lg mb-6 text-slate-900">Our <span className="text-primary italic">Success Stories</span></h2>
           <p className="text-lg text-muted-foreground">
-            A glimpse into the digital transformations we've delivered for our global clients.
+            A glimpse into the digital transformations we&apos;ve delivered for our global clients.
           </p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {projects.map((project, i) => (
-            <motion.div
+            <div
               key={i}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ delay: i * 0.1 }}
-              viewport={{ once: true }}
               className="relative group cursor-pointer"
             >
               <div className="aspect-[4/5] rounded-[2.5rem] overflow-hidden bg-slate-100 relative">
@@ -48,7 +41,7 @@ export default function PortfolioPreview() {
                     <Plus size={24} />
                  </div>
               </div>
-            </motion.div>
+            </div>
           ))}
         </div>
 

@@ -1,18 +1,22 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { SiteConfig } from "@/lib/siteConfig";
+
+const DEFAULT_STATS = [
+  { value: "1,800+", label: "Global Clients" },
+  { value: "99%", label: "Satisfaction Rate" },
+  { value: "6+", label: "Years Experience" },
+];
 
 export default function Stats() {
-  const [stats, setStats] = useState<{label: string, value: string}[]>([]);
+  const [stats, setStats] = useState(DEFAULT_STATS);
 
   useEffect(() => {
     fetch('/api/config')
       .then(res => res.json())
-      .then(data => setStats(data.home.stats));
+      .then(data => { if (data?.home?.stats?.length) setStats(data.home.stats); })
+      .catch(() => {});
   }, []);
-
-  if (stats.length === 0) return null;
 
   return (
     <section className="bg-slate-50 py-12 border-y">

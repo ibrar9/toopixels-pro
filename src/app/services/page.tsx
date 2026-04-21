@@ -1,13 +1,9 @@
-"use client";
-
-import { motion } from "framer-motion";
-import { Palette, Rocket, Globe, Share2, Code2, ArrowRight, Laptop, CheckCircle2 } from "lucide-react";
+import { Palette, Rocket, Globe, Share2, Code2, ArrowRight, CheckCircle2 } from "lucide-react";
 
 const allServices = [
   {
     title: "Graphics Design",
     icon: Palette,
-    short: "Logo, branding, and visual identity.",
     desc: "We create stunning logos, brochures, business cards, and social media posts that establish your authority.",
     benefits: ["Unique Brand Voice", "Modern Aesthetics", "Market-Ready Assets"],
     color: "bg-orange-50",
@@ -16,7 +12,6 @@ const allServices = [
   {
     title: "Digital Marketing",
     icon: Rocket,
-    short: "SEO, PPC, and Ads.",
     desc: "Dominate search results and lead generation through performance campaigns and SEO.",
     benefits: ["Increased Visibility", "Higher ROI", "Targeted Traffic"],
     color: "bg-blue-50",
@@ -25,7 +20,6 @@ const allServices = [
   {
     title: "Website Development",
     icon: Globe,
-    short: "Corporate & E-commerce sites.",
     desc: "Fast, responsive websites with modern CMS like Next.js and Headless solutions.",
     benefits: ["Mobile First", "SEO Optimized", "Blazing Speed"],
     color: "bg-green-50",
@@ -34,7 +28,6 @@ const allServices = [
   {
     title: "Social Media Management",
     icon: Share2,
-    short: "Growth & Engagement.",
     desc: "Complete account growth, scheduling, and community management for maximum reach.",
     benefits: ["Active Community", "Consistent Branding", "Real Engagement"],
     color: "bg-purple-50",
@@ -43,7 +36,6 @@ const allServices = [
   {
     title: "Software Development",
     icon: Code2,
-    short: "Custom tools & CRM.",
     desc: "Custom business software, admin tools, and workflow automation tailored to your needs.",
     benefits: ["Workflow Efficiency", "Custom Features", "Scalable Tech"],
     color: "bg-slate-50",
@@ -66,11 +58,8 @@ export default function Services() {
       <section className="section-padding bg-white">
         <div className="max-w-7xl mx-auto px-6 space-y-32">
            {allServices.map((service, i) => (
-             <motion.div 
+             <div 
                key={i} 
-               initial={{ opacity: 0, y: 50 }}
-               whileInView={{ opacity: 1, y: 0 }}
-               viewport={{ once: true }}
                className={`flex flex-col ${i % 2 === 0 ? 'md:flex-row' : 'md:flex-row-reverse'} gap-16 items-center`}
              >
                 <div className={`flex-1 aspect-square md:aspect-video rounded-[3rem] ${service.color} flex items-center justify-center p-20`}>
@@ -90,7 +79,7 @@ export default function Services() {
                       Get This Service <ArrowRight size={20} />
                    </button>
                 </div>
-             </motion.div>
+             </div>
            ))}
         </div>
       </section>
