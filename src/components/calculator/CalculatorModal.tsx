@@ -360,51 +360,51 @@ export default function CalculatorModal({ isOpen, onClose }: { isOpen: boolean; 
         initial={{ opacity: 0, scale: 0.95, y: 30 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.95, y: 30 }}
-        className="relative w-full max-w-5xl bg-white rounded-3xl md:rounded-[3rem] shadow-2xl overflow-hidden flex flex-col md:flex-row md:min-h-[700px] max-h-[95vh] md:max-h-[90vh]"
+        className="relative w-full max-w-5xl bg-white rounded-3xl md:rounded-[3rem] shadow-2xl overflow-hidden flex flex-col md:flex-row md:min-h-[600px] lg:min-h-[700px] max-h-[95vh] md:max-h-[90vh]"
       >
         {/* Left Sidebar */}
         <div className="w-full md:w-80 bg-slate-950 p-6 md:p-10 text-white flex flex-col justify-between border-b md:border-b-0 md:border-r border-slate-900 shrink-0">
           <div>
-            <div className="flex items-center gap-3 mb-6 md:mb-16">
-              <div className="w-12 h-12 rounded-2xl bg-primary flex items-center justify-center shadow-lg shadow-primary/20">
-                <Calculator size={24} className="text-white" />
+            <div className="flex items-center gap-3 mb-6 md:mb-12">
+              <div className="w-10 h-10 md:w-12 md:h-12 rounded-xl md:rounded-2xl bg-primary flex items-center justify-center shadow-lg shadow-primary/20">
+                <Calculator size={20} className="text-white md:w-6 md:h-6" />
               </div>
               <div>
-                <span className="font-black tracking-tighter text-2xl block leading-none">Estimate</span>
-                <span className="text-primary text-xs font-bold uppercase tracking-widest">by Toopixels</span>
+                <span className="font-black tracking-tighter text-xl md:text-2xl block leading-none">Estimate</span>
+                <span className="text-primary text-[10px] md:text-xs font-bold uppercase tracking-widest">by Toopixels</span>
               </div>
             </div>
 
-            <div className="space-y-4 md:space-y-8">
+            <div className="space-y-3 md:space-y-6">
               <div className="relative">
-                <div className="absolute -left-6 md:-left-10 top-1/2 -translate-y-1/2 w-1 h-8 md:h-12 bg-primary rounded-full" />
-                <h3 className="text-xl md:text-3xl font-bold leading-tight">Fast, Transparent <br className="hidden md:block"/>Estimation.</h3>
+                <div className="absolute -left-6 md:-left-10 top-1/2 -translate-y-1/2 w-1 h-6 md:h-12 bg-primary rounded-full" />
+                <h3 className="text-lg md:text-3xl font-bold leading-tight">Fast, Transparent <br className="hidden md:block"/>Estimation.</h3>
               </div>
-              <p className="text-slate-400 text-xs md:text-sm leading-relaxed font-medium">
-                Our tool analyzes your needs to provide an accurate agency proposal instantly.
+              <p className="text-slate-400 text-[10px] md:text-sm leading-relaxed font-medium">
+                Our tool provides an accurate agency proposal instantly.
               </p>
             </div>
           </div>
 
           <div className="mt-6 md:mt-12">
             {!(step === 1 || (selections.subService === "Social Media Design" && step <= 2)) && (
-              <div className="p-6 rounded-3xl bg-slate-900/50 border border-slate-800 animate-in fade-in zoom-in duration-500">
-                 <p className="text-[10px] uppercase tracking-[0.2em] text-slate-500 font-black mb-3 text-center">
+              <div className="p-4 md:p-6 rounded-2xl md:rounded-3xl bg-slate-900/50 border border-slate-800">
+                 <p className="text-[9px] uppercase tracking-[0.2em] text-slate-500 font-black mb-2 text-center">
                    {isFixed ? "Total Investment" : "Investment Range"}
                  </p>
-                 <div className="flex flex-col items-center gap-1">
+                 <div className="flex flex-col items-center gap-0.5">
                    <div className="flex items-center gap-1">
                      {isFixed ? (
-                       <span className="text-4xl font-black text-primary">{min}</span>
+                       <span className="text-2xl md:text-4xl font-black text-primary">{min}</span>
                      ) : (
                        <div className="flex items-center gap-1">
-                         <span className="text-2xl font-black text-white">{min}</span>
-                         <span className="text-slate-600 font-bold px-1">-</span>
-                         <span className="text-2xl font-black text-primary">{max}</span>
+                         <span className="text-xl md:text-2xl font-black text-white">{min}</span>
+                         <span className="text-slate-600 font-bold">-</span>
+                         <span className="text-xl md:text-2xl font-black text-primary">{max}</span>
                        </div>
                      )}
                    </div>
-                   <span className="text-slate-500 text-[10px] font-black uppercase tracking-widest mt-1">AED (Dirhams)</span>
+                   <span className="text-slate-500 text-[9px] font-black uppercase tracking-widest">AED (Dirhams)</span>
                  </div>
               </div>
             )}
@@ -412,7 +412,7 @@ export default function CalculatorModal({ isOpen, onClose }: { isOpen: boolean; 
         </div>
 
         {/* Main Content Area */}
-        <div className="flex-1 p-8 md:p-14 relative flex flex-col overflow-hidden">
+        <div className="flex-1 p-5 md:p-14 relative flex flex-col overflow-hidden">
           <button 
             onClick={onClose}
             className="absolute top-4 right-4 md:top-8 md:right-8 p-2 md:p-3 hover:bg-slate-100 rounded-full transition-all z-30 group bg-white/80 backdrop-blur-sm shadow-sm md:shadow-none"
@@ -425,12 +425,12 @@ export default function CalculatorModal({ isOpen, onClose }: { isOpen: boolean; 
               {/* START SCREEN */}
               {step === 0 && (
                 <motion.div key="start" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
-                  <div className="mb-12">
-                    <h2 className="text-4xl font-black text-slate-900 mb-4">Select Your Service</h2>
-                    <p className="text-slate-500 text-lg font-medium">Get a professional cost estimate for your project.</p>
+                  <div className="mb-6 md:mb-12">
+                    <h2 className="text-2xl md:text-4xl font-black text-slate-900 mb-2 md:mb-4">Select Your Service</h2>
+                    <p className="text-slate-500 text-sm md:text-lg font-medium">Get a professional cost estimate instantly.</p>
                   </div>
                   
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 mb-8">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6 md:mb-8">
                     {services.map((s) => (
                       <button
                         key={s.id}
@@ -438,17 +438,17 @@ export default function CalculatorModal({ isOpen, onClose }: { isOpen: boolean; 
                           setSelections({ ...selections, serviceId: s.id as ServiceID });
                           nextStep();
                         }}
-                        className="group p-8 rounded-[2.5rem] border-2 border-slate-50 hover:border-primary/20 bg-slate-50/50 hover:bg-white hover:shadow-xl transition-all text-left flex flex-col gap-6 relative"
+                        className="group p-5 md:p-8 rounded-3xl md:rounded-[2.5rem] border-2 border-slate-50 hover:border-primary/20 bg-slate-50/50 hover:bg-white hover:shadow-xl transition-all text-left flex flex-col gap-4 md:gap-6 relative"
                       >
-                        <div className={cn("w-16 h-16 rounded-[1.5rem] flex items-center justify-center transition-all group-hover:rotate-6", s.color)}>
-                           <s.icon className="text-white" size={32} />
+                        <div className={cn("w-12 h-12 md:w-16 md:h-16 rounded-2xl md:rounded-[1.5rem] flex items-center justify-center transition-all group-hover:rotate-6", s.color)}>
+                           <s.icon className="text-white" size={24} />
                         </div>
                         <div>
-                          <h4 className="font-black text-xl text-slate-900 group-hover:text-primary transition-colors">{s.title}</h4>
-                          <p className="text-sm text-slate-500 font-medium group-hover:text-slate-600">{s.desc}</p>
+                          <h4 className="font-black text-lg md:text-xl text-slate-900 group-hover:text-primary transition-colors">{s.title}</h4>
+                          <p className="text-[11px] md:text-sm text-slate-500 font-medium group-hover:text-slate-600">{s.desc}</p>
                         </div>
-                        <div className="absolute top-8 right-8 w-10 h-10 rounded-full border border-slate-200 flex items-center justify-center group-hover:bg-primary group-hover:border-primary group-hover:text-white transition-all">
-                          <ArrowRight size={20} />
+                        <div className="absolute top-5 right-5 md:top-8 md:right-8 w-8 h-8 md:w-10 md:h-10 rounded-full border border-slate-200 flex items-center justify-center group-hover:bg-primary group-hover:border-primary group-hover:text-white transition-all">
+                          <ArrowRight size={16} />
                         </div>
                       </button>
                     ))}
@@ -1104,17 +1104,17 @@ export default function CalculatorModal({ isOpen, onClose }: { isOpen: boolean; 
 
                 return (
                   <motion.div key="summary" initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="pt-4">
-                    <div className="text-center mb-10">
-                       <div className="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                          <Check size={32} className="text-emerald-500" />
+                    <div className="text-center mb-6 md:mb-10">
+                       <div className="w-12 h-12 md:w-16 md:h-16 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                          <Check size={24} className="text-emerald-500" />
                        </div>
-                       <h2 className="text-3xl font-black text-slate-900 mb-1">Your Total Estimate</h2>
-                       <p className="text-slate-500 font-bold text-sm">
+                       <h2 className="text-2xl md:text-3xl font-black text-slate-900 mb-1">Your Total Estimate</h2>
+                       <p className="text-slate-500 font-bold text-[10px] md:text-sm uppercase">
                          {isWebsite ? getWebsitePackage() : "Professional Digital Package"}
                        </p>
                     </div>
 
-                    <div className="bg-slate-50 rounded-[2.5rem] p-10 border border-slate-100 mb-10 relative group overflow-hidden">
+                    <div className="bg-slate-50 rounded-3xl md:rounded-[2.5rem] p-6 md:p-10 border border-slate-100 mb-6 md:mb-10 relative group overflow-hidden">
                       <div className="absolute top-0 right-0 p-10 opacity-5 group-hover:scale-110 transition-transform"><Calculator size={100} /></div>
                       
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-12 mb-10 pb-10 border-b border-slate-200">
@@ -1174,8 +1174,8 @@ export default function CalculatorModal({ isOpen, onClose }: { isOpen: boolean; 
                       </div>
                     </div>
 
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                      <button onClick={() => setStep(11)} className="bg-primary text-white p-6 rounded-[2rem] font-black flex items-center justify-center gap-3 hover:scale-[1.02] active:scale-95 transition-all shadow-xl shadow-primary/20">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 md:gap-4">
+                      <button onClick={() => setStep(11)} className="bg-primary text-white p-5 md:p-6 rounded-2xl md:rounded-[2.5rem] font-black flex items-center justify-center gap-3 shadow-xl shadow-primary/20">
                          START PROJECT <Rocket size={20} />
                       </button>
                       <Link 
@@ -1263,13 +1263,13 @@ export default function CalculatorModal({ isOpen, onClose }: { isOpen: boolean; 
           </div>
 
           {/* Footer Progress */}
-          <div className="mt-6 md:mt-8 pt-6 md:pt-10 border-t border-slate-50 flex flex-col md:flex-row items-center justify-between gap-4">
+          <div className="mt-4 md:mt-8 pt-4 md:pt-10 border-t border-slate-50 flex flex-col md:flex-row items-center justify-between gap-4">
              <div className="flex flex-wrap justify-center gap-1.5 md:gap-2">
                {[0,1,2,3,4,5,6,7,8,10].map((i) => (
                  <div key={i} className={cn("h-1.5 rounded-full transition-all duration-500", i === step ? "w-6 md:w-8 bg-primary" : i < step ? "w-3 md:w-4 bg-emerald-400" : "w-3 md:w-4 bg-slate-100")} />
                ))}
              </div>
-             <p className="text-[9px] md:text-[10px] uppercase tracking-widest font-black text-slate-300">Confidential Estimate • All Rights Reserved</p>
+             <p className="text-[8px] md:text-[10px] uppercase tracking-widest font-black text-slate-300">Fast Estimate • Toopixels</p>
           </div>
         </div>
       </motion.div>
@@ -1279,10 +1279,10 @@ export default function CalculatorModal({ isOpen, onClose }: { isOpen: boolean; 
 
 function LogoQuestion({ label, sub, options, prices, current, onSelect, showPerPost, hidePlus }: any) {
   return (
-    <div className="space-y-8 animate-in fade-in duration-500">
+    <div className="space-y-4 md:space-y-8 animate-in fade-in duration-500">
       <div>
-        <h3 className="text-2xl font-black text-slate-900 mb-1">{label}</h3>
-        <p className="text-slate-500 font-medium text-sm">{sub}</p>
+        <h3 className="text-xl md:text-2xl font-black text-slate-900 mb-1">{label}</h3>
+        <p className="text-slate-500 font-medium text-xs md:text-sm">{sub}</p>
       </div>
       <div className="grid grid-cols-1 gap-3">
         {options.map((opt: string, i: number) => (
@@ -1290,13 +1290,13 @@ function LogoQuestion({ label, sub, options, prices, current, onSelect, showPerP
             key={opt}
             onClick={() => onSelect(opt)}
             className={cn(
-              "p-6 rounded-3xl border-2 transition-all flex items-center justify-between text-left group",
+              "p-4 md:p-6 rounded-2xl md:rounded-3xl border-2 transition-all flex items-center justify-between text-left group",
               current === opt ? "bg-primary text-white border-primary shadow-xl shadow-primary/20 scale-[1.01]" : "bg-slate-50 border-slate-50 text-slate-900 hover:bg-white hover:border-primary/20"
             )}
           >
             <div>
-              <p className="font-black text-lg">{opt}</p>
-              <p className={cn("text-xs font-bold mt-1 uppercase tracking-widest", current === opt ? "text-white/80" : "text-primary")}>
+              <p className="font-black text-base md:text-lg">{opt}</p>
+              <p className={cn("text-[10px] md:text-xs font-bold mt-1 uppercase tracking-widest", current === opt ? "text-white/80" : "text-primary")}>
                 {showPerPost && (prices[i] === 30 || prices[i] === 50) 
                   ? `${prices[i]} AED / POST` 
                   : prices[i] === 0 
@@ -1306,8 +1306,8 @@ function LogoQuestion({ label, sub, options, prices, current, onSelect, showPerP
                       : `+ ${prices[i]} AED`}
               </p>
             </div>
-            <div className={cn("w-10 h-10 rounded-full flex items-center justify-center transition-all", current === opt ? "bg-white text-primary" : "bg-white text-slate-300 group-hover:text-primary")}>
-              {current === opt ? <Check size={20} /> : <Plus size={20} />}
+            <div className={cn("w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center transition-all", current === opt ? "bg-white text-primary" : "bg-white text-slate-300 group-hover:text-primary")}>
+              {current === opt ? <Check size={16} /> : <Plus size={16} />}
             </div>
           </button>
         ))}
