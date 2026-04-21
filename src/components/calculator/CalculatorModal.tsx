@@ -496,10 +496,15 @@ export default function CalculatorModal({ isOpen, onClose }: { isOpen: boolean; 
                   </button>
                   <div className="mb-12">
                     <h2 className="text-4xl font-black text-slate-900 mb-4">
-                      {selections.serviceId === 'website' ? "Calculate your website cost in 60 seconds" : "Choose Design Type"}
+                      {selections.serviceId === 'graphic' ? "Choose Design Type" : 
+                       selections.serviceId === 'marketing' ? "Choose Marketing Type" : 
+                       selections.serviceId === 'website' ? "Choose Project Type" : 
+                       selections.serviceId === 'smm' ? "Choose Platform" : "Choose Service Type"}
                     </h2>
-                    <p className="text-slate-500 text-lg font-medium capitalize">
-                      {selections.serviceId === 'website' ? "Answer a few quick questions to get an estimated budget and timeline." : `Refining your ${selections.serviceId} selection.`}
+                    <p className="text-slate-500 text-lg font-medium">
+                      Refining your {selections.serviceId === 'graphic' ? 'graphic' : 
+                                     selections.serviceId === 'marketing' ? 'marketing' :
+                                     selections.serviceId === 'website' ? 'website' : 'social media'} selection.
                     </p>
                   </div>
 
