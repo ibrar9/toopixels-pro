@@ -47,9 +47,7 @@ export default function Hero() {
           </div>
           
           <h1 className="heading-xl mb-8 text-slate-900">
-            {displayConfig.home.heroTitle.split(' ').map((word, i) => (
-               <span key={i} className={i === (displayConfig.home.heroTitle.split(' ').length || 0) - 1 ? "text-primary italic" : ""}>{word} </span>
-            ))}
+            Build your premium <br /> <span className="text-primary italic">Digital Brand</span>
           </h1>
           
           <p className="text-xl text-muted-foreground mb-12 max-w-lg leading-relaxed font-medium">
@@ -77,7 +75,9 @@ export default function Hero() {
                fill
                className="object-cover transition-transform duration-700 group-hover:scale-110" 
                priority
-               sizes="(max-width: 768px) 100vw, 50vw"
+               fetchPriority="high"
+               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+               quality={60}
             />
           </div>
           {/* Floating cards */}
