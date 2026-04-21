@@ -1179,20 +1179,12 @@ export default function CalculatorModal({ isOpen, onClose }: { isOpen: boolean; 
                          START PROJECT <Rocket size={20} />
                       </button>
                       <Link 
-                        href="/contact"
-                        onClick={onClose}
-                        className="bg-slate-950 text-white p-6 rounded-[2rem] font-black flex items-center justify-center gap-3 hover:bg-slate-800 transition-colors"
+                         href="/contact"
+                         onClick={onClose}
+                         className="bg-slate-950 text-white p-6 rounded-[2rem] font-black flex items-center justify-center gap-3 hover:bg-slate-800 transition-colors"
                       >
                          CUSTOM QUOTE <Mail size={20} />
                       </Link>
-                      <a 
-                        href="https://wa.me/971556721324" 
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="bg-emerald-500 text-white p-6 rounded-[2rem] font-black flex items-center justify-center gap-3 hover:scale-[1.02] active:scale-95 transition-all col-span-full shadow-emerald-500/20 shadow-xl"
-                      >
-                         CHAT ON WHATSAPP <MessageSquare size={20} />
-                      </a>
                     </div>
                   </motion.div>
                 );
