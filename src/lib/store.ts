@@ -117,3 +117,22 @@ export async function deleteOrder(id: string) {
   await saveData(data);
   return true;
 }
+
+export async function addVisit(visit: { date: string; city: string; country: string }) {
+  const data = await getData();
+  if (!data.analytics) data.analytics = [];
+  data.analytics.push(visit);
+  
+  // Keep only last 10,000 visits to avoid performance bloat
+  if (data.analytics.length > 10000) {
+    data.analytics = data.analytics.slice(-10000);
+  }
+  
+  await saveData(data);
+  return visit;
+}
+
+export async function getAnalytics() {
+  const data = await getData();
+  return data.analytics || [];
+}

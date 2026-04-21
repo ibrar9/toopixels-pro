@@ -36,6 +36,7 @@ export default function AdminDashboard() {
   const [inquiries, setInquiries] = useState<any[]>([]);
   // Orders State
   const [orders, setOrders] = useState<any[]>([]);
+  const [analytics, setAnalytics] = useState<any[]>([]);
 
   useEffect(() => {
     setIsMobileMenuOpen(false); // Close menu on tab change
@@ -61,6 +62,7 @@ export default function AdminDashboard() {
     fetch('/api/inquiries').then(res => res.json()).then(data => setInquiries(data));
     fetch('/api/blogs').then(res => res.json()).then(data => setBlogs(data));
     fetch('/api/orders').then(res => res.json()).then(data => setOrders(data));
+    fetch('/api/analytics').then(res => res.json()).then(data => setAnalytics(data));
   }, [router]);
 
   const handleLogout = () => {
@@ -251,7 +253,8 @@ export default function AdminDashboard() {
              { name: "Categories", icon: Settings },
              { name: "Blogs", icon: FileText },
              { name: "Inquiries", icon: MessageSquare },
-             { name: "Orders", icon: Rocket }
+             { name: "Orders", icon: Rocket },
+             { name: "Analytics", icon: LayoutDashboard }
            ].map((tab) => (
              <button 
                key={tab.name}
@@ -581,6 +584,68 @@ export default function AdminDashboard() {
                   </div>
                 </div>
                )}
+           {activeTab === "Analytics" && (
+              <div className="space-y-12">
+                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div className="p-8 bg-slate-50 rounded-[2rem] border border-slate-100">
+                       <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Total Visits</p>
+                       <h4 className="text-4xl font-black text-slate-900">{analytics.length}</h4>
+                    </div>
+                    <div className="p-8 bg-emerald-50/30 rounded-[2rem] border border-emerald-100">
+                       <p className="text-[10px] font-black text-emerald-600 uppercase tracking-widest mb-2">Unique Cities</p>
+                       <h4 className="text-4xl font-black text-emerald-700">
+                          {new Set(analytics.map(v => v.city)).size}
+                       </h4>
+                    </div>
+                    <div className="p-8 bg-primary/5 rounded-[2rem] border border-primary/20">
+                       <p className="text-[10px] font-black text-primary uppercase tracking-widest mb-2">Visits Today</p>
+                       <h4 className="text-4xl font-black text-primary">
+                          {analytics.filter(v => new Date(v.date).toDateString() === new Date().toDateString()).length}
+                       </h4>
+                    </div>
+                 </div>
+
+                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <div className="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-sm">
+                       <h3 className="text-xl font-black text-slate-900 mb-6">Top Cities</h3>
+                       <div className="space-y-4">
+                          {Object.entries(
+                            analytics.reduce((acc: any, v) => {
+                              acc[v.city] = (acc[v.city] || 0) + 1;
+                              return acc;
+                            }, {})
+                          )
+                          .sort((a: any, b: any) => b[1] - a[1])
+                          .slice(0, 8)
+                          .map(([city, count]: any) => (
+                             <div key={city} className="flex justify-between items-center bg-slate-50 p-4 rounded-xl">
+                                <span className="font-bold text-slate-700">{city}</span>
+                                <span className="bg-white px-3 py-1 rounded-full text-xs font-black text-primary shadow-sm">{count} visits</span>
+                             </div>
+                          ))}
+                          {analytics.length === 0 && <p className="text-slate-400 italic text-center py-10">Waiting for data...</p>}
+                       </div>
+                    </div>
+
+                    <div className="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-sm">
+                       <h3 className="text-xl font-black text-slate-900 mb-6">Recent Traffic</h3>
+                       <div className="space-y-4">
+                          {analytics.slice().reverse().slice(0, 10).map((visit, i) => (
+                             <div key={i} className="flex justify-between items-center border-b border-slate-50 pb-4">
+                                <div>
+                                   <p className="font-bold text-slate-900">{visit.city}</p>
+                                   <p className="text-[10px] text-slate-400 font-medium">{visit.country}</p>
+                                </div>
+                                <span className="text-[10px] font-black text-slate-300">
+                                   {new Date(visit.date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                </span>
+                             </div>
+                          ))}
+                       </div>
+                    </div>
+                 </div>
+              </div>
+           )}
         </div>
       </main>
 

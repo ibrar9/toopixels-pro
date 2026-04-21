@@ -69,5 +69,12 @@
     }
   },
   "inquiries": [],
-  "orders": []
+  "orders": [],
+  "analytics": [
+    {
+      "date": "2026-04-21T12:12:34.637Z",
+      "city": "Unknown",
+      "country": "Unknown"
+    }
+  ]
 }

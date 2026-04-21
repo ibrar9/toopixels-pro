@@ -3,6 +3,7 @@ import { Inter, Outfit } from "next/font/google";
 import "./globals.css";
 import ConditionalLayout from "@/components/layout/ConditionalLayout";
 import Script from "next/script";
+import VisitTracker from "@/components/layout/VisitTracker";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter", display: 'swap' });
 const outfit = Outfit({ subsets: ["latin"], variable: "--font-outfit", display: 'swap' });
@@ -83,6 +84,7 @@ export default function RootLayout({
         />
       </head>
       <body className={`${inter.variable} ${outfit.variable} font-sans`}>
+        <VisitTracker />
         <ConditionalLayout>{children}</ConditionalLayout>
         <Script id="clear-sw" strategy="afterInteractive">
           {`
