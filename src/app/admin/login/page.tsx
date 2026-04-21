@@ -53,7 +53,7 @@ export default function AdminLogin() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 className="w-full bg-slate-50 border-2 border-slate-50 focus:border-primary/20 focus:bg-white p-5 pl-14 rounded-2xl outline-none transition-all font-bold text-slate-900" 
-                placeholder="admin@toppixels.pro"
+                placeholder=""
                 required
                />
             </div>
@@ -68,7 +68,7 @@ export default function AdminLogin() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 className="w-full bg-slate-50 border-2 border-slate-50 focus:border-primary/20 focus:bg-white p-5 pl-14 rounded-2xl outline-none transition-all font-bold text-slate-900" 
-                placeholder="••••••••"
+                placeholder=""
                 required
                />
             </div>
@@ -82,15 +82,6 @@ export default function AdminLogin() {
             {loading ? <Loader2 className="animate-spin" /> : <>SIGN IN TO PANEL <Lock size={18} className="group-hover:rotate-12 transition-transform" /></>}
           </button>
         </form>
-
-        <div className="mt-10 p-5 rounded-2xl bg-amber-50/50 border border-amber-100 flex items-start gap-4">
-           <Info className="text-amber-500 shrink-0" size={20} />
-           <div className="text-[11px] leading-relaxed">
-             <p className="font-black text-amber-900 uppercase mb-1">Default Credentials</p>
-             <p className="text-amber-800 font-medium">User: <span className="font-black">admin@toppixels.pro</span></p>
-             <p className="text-amber-800 font-medium">Pass: <span className="font-black">Swat69</span></p>
-           </div>
-        </div>
       </motion.div>
     </div>
   );
