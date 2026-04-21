@@ -8,8 +8,8 @@ const inter = Inter({ subsets: ["latin"], variable: "--font-inter", display: 'sw
 const outfit = Outfit({ subsets: ["latin"], variable: "--font-outfit", display: 'swap' });
 
 export const metadata: Metadata = {
-  title: "TopPixels | Premium Digital Agency & Solutions",
-  description: "We Build Creative Digital Experiences That Grow Brands. TopPixels is a professional agency since 2018.",
+  title: "Best Digital Agency in Dubai | TopPixels - Branding & Web Solutions",
+  description: "TopPixels is the best digital agency in Dubai. We specialize in premium Logo Design, Website Development, and Performance Marketing for modern brands since 2018.",
 };
 
 export const viewport = {

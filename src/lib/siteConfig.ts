@@ -23,9 +23,9 @@ export interface SiteConfig {
 
 export const defaultSiteConfig: SiteConfig = {
   home: {
-    heroTitle: "Build your premium Digital Brand",
-    heroSubtitle: "toopixels is your partner for high-end web development, creative design, and result-driven digital marketing.",
-    heroImage: "https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&q=80&w=2301",
+    heroTitle: "Best Digital Agency in Dubai",
+    heroSubtitle: "We focus on quality and innovation to help your business reach its maximum potential in the digital world with branding, marketing and web development.",
+    heroImage: "https://images.unsplash.com/photo-1551434678-e076c223a692?auto=format&fit=crop&q=75&w=1200",
     stats: [
       { label: "Working Since", value: "2018" },
       { label: "Customers served", value: "1.8k+" },

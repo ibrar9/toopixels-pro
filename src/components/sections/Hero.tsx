@@ -47,7 +47,7 @@ export default function Hero() {
           </div>
           
           <h1 className="heading-xl mb-8 text-slate-900">
-            Build your premium <br /> <span className="text-primary italic">Digital Brand</span>
+            Best Digital <br /> <span className="text-primary italic">Agency in Dubai</span>
           </h1>
           
           <p className="text-xl text-muted-foreground mb-12 max-w-lg leading-relaxed font-medium">
