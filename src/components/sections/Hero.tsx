@@ -14,7 +14,7 @@ const DEFAULT_CONFIG = {
   home: {
     heroTitle: "Build your premium Digital Brand",
     heroSubtitle: "We focus on quality and innovation to help your business reach its maximum potential in the digital world.",
-    heroImage: "https://images.unsplash.com/photo-1551434678-e076c223a692?auto=format&fit=crop&q=80&w=2070"
+    heroImage: "https://images.unsplash.com/photo-1551434678-e076c223a692?auto=format&fit=crop&q=75&w=1200"
   }
 };
 
