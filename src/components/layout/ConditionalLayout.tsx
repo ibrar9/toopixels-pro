@@ -3,6 +3,7 @@
 import { usePathname } from "next/navigation";
 import Navbar from "./Navbar";
 import Footer from "./Footer";
+import AIChatbot from "../chat/AIChatbot";
 
 export default function ConditionalLayout({
   children,
@@ -16,6 +17,7 @@ export default function ConditionalLayout({
     <>
       {!isAdmin && <Navbar />}
       <main>{children}</main>
+      {!isAdmin && <AIChatbot />}
       {!isAdmin && <Footer />}
     </>
   );

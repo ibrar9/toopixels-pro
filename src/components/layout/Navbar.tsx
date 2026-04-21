@@ -28,8 +28,15 @@ export default function Navbar() {
     const handleScroll = () => {
       setScrolled(window.scrollY > 20);
     };
+    const handleOpenCalc = () => setIsCalculatorOpen(true);
+
     window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
+    window.addEventListener("open-calculator", handleOpenCalc);
+    
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("open-calculator", handleOpenCalc);
+    };
   }, []);
 
   return (
