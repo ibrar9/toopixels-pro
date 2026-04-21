@@ -185,6 +185,19 @@ export default function CalculatorModal({ isOpen, onClose }: { isOpen: boolean; 
   };
 
   useEffect(() => {
+    const handleOpen = (e: any) => {
+      const serviceId = e.detail?.serviceId as ServiceID;
+      if (serviceId) {
+        setSelections(prev => ({ ...prev, serviceId }));
+        setStep(1);
+      }
+    };
+
+    window.addEventListener("open-calculator", handleOpen as EventListener);
+    return () => window.removeEventListener("open-calculator", handleOpen as EventListener);
+  }, []);
+
+  useEffect(() => {
     if (!isOpen) reset();
   }, [isOpen]);
 

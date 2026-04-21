@@ -1,7 +1,10 @@
+"use client";
+
 import { Palette, Rocket, Globe, Share2, Code2, ArrowRight, CheckCircle2 } from "lucide-react";
 
 const allServices = [
   {
+    id: "graphic",
     title: "Graphics Design",
     icon: Palette,
     desc: "We create stunning logos, brochures, business cards, and social media posts that establish your authority.",
@@ -10,6 +13,7 @@ const allServices = [
     iconColor: "text-orange-600"
   },
   {
+    id: "marketing",
     title: "Digital Marketing",
     icon: Rocket,
     desc: "Dominate search results and lead generation through performance campaigns and SEO.",
@@ -18,6 +22,7 @@ const allServices = [
     iconColor: "text-blue-600"
   },
   {
+    id: "website",
     title: "Website Development",
     icon: Globe,
     desc: "Fast, responsive websites with modern CMS like Next.js and Headless solutions.",
@@ -26,6 +31,7 @@ const allServices = [
     iconColor: "text-green-600"
   },
   {
+    id: "smm",
     title: "Social Media Management",
     icon: Share2,
     desc: "Complete account growth, scheduling, and community management for maximum reach.",
@@ -34,6 +40,7 @@ const allServices = [
     iconColor: "text-purple-600"
   },
   {
+    id: "software",
     title: "Software Development",
     icon: Code2,
     desc: "Custom business software, admin tools, and workflow automation tailored to your needs.",
@@ -44,6 +51,14 @@ const allServices = [
 ];
 
 export default function Services() {
+  const handleOpenCalculator = (id: string) => {
+    // We map 'software' to 'website' since custom software usually follows web app logic in our calculator
+    const serviceId = id === "software" ? "website" : id;
+    window.dispatchEvent(new CustomEvent("open-calculator", { 
+      detail: { serviceId } 
+    }));
+  };
+
   return (
     <div className="flex flex-col">
        <section className="bg-slate-50 pt-40 pb-20 px-6">
@@ -75,7 +90,10 @@ export default function Services() {
                         </li>
                       ))}
                    </ul>
-                   <button className="bg-slate-900 text-white px-8 py-4 rounded-2xl font-bold flex items-center gap-2 hover:translate-x-2 transition-all">
+                   <button 
+                     onClick={() => handleOpenCalculator(service.id)}
+                     className="bg-slate-900 text-white px-8 py-4 rounded-2xl font-bold flex items-center gap-2 hover:translate-x-2 transition-all"
+                   >
                       Get This Service <ArrowRight size={20} />
                    </button>
                 </div>
