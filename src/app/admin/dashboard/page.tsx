@@ -42,6 +42,11 @@ export default function AdminDashboard() {
   }, [activeTab]);
 
   useEffect(() => {
+    const token = localStorage.getItem("tp_admin_token");
+    if (!token) {
+      router.push("/admin/login");
+    }
+
     fetch('/api/config').then(res => res.json()).then(data => {
       setConfig(data);
       if (data.portfolioCategories) {
@@ -56,7 +61,12 @@ export default function AdminDashboard() {
     fetch('/api/inquiries').then(res => res.json()).then(data => setInquiries(data));
     fetch('/api/blogs').then(res => res.json()).then(data => setBlogs(data));
     fetch('/api/orders').then(res => res.json()).then(data => setOrders(data));
-  }, []);
+  }, [router]);
+
+  const handleLogout = () => {
+    localStorage.removeItem("tp_admin_token");
+    router.push("/admin/login");
+  };
 
   const handleCreateProject = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -258,6 +268,13 @@ export default function AdminDashboard() {
              </button>
            ))}
         </nav>
+
+        <button 
+          onClick={handleLogout}
+          className="mt-auto w-full flex items-center gap-4 p-4 rounded-xl font-bold text-slate-400 hover:bg-red-50 hover:text-red-500 transition-all border-t border-slate-50 pt-8"
+        >
+          <Lock size={20} /> Sign Out
+        </button>
       </aside>
 
       <main className="flex-1 ml-0 lg:ml-72 p-4 md:p-12">

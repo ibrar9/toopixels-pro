@@ -1,61 +1,73 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { Lock, Mail, Loader2 } from "lucide-react";
+import { Lock, Mail, Loader2, ShieldCheck, Info } from "lucide-react";
 import { motion } from "framer-motion";
 
 export default function AdminLogin() {
   const [loading, setLoading] = useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const router = useRouter();
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    // Snappier Mock Auth Logic
+    
+    // In a real app, this would be a server-side check
+    // For now, we simulate the logic the user has been using
     setTimeout(() => {
-      router.push("/admin/dashboard");
-    }, 800);
+      if (email === "admin@toppixels.pro" && password === "Swat69") {
+        localStorage.setItem("tp_admin_token", "active_session_" + Date.now());
+        router.push("/admin/dashboard");
+      } else {
+        alert("Invalid email or password!");
+        setLoading(false);
+      }
+    }, 1000);
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 flex items-center justify-center p-4 md:p-6">
+    <div className="min-h-screen bg-slate-50 flex items-center justify-center p-4 md:p-6 font-sans">
       <motion.div 
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="max-w-md w-full bg-white rounded-3xl md:rounded-[2.5rem] shadow-2xl p-8 md:p-12 border border-slate-100"
+        className="max-w-md w-full bg-white rounded-3xl md:rounded-[3rem] shadow-2xl p-10 md:p-14 border border-slate-100"
       >
-        <div className="text-center mb-8 md:mb-10">
-          <div className="w-14 h-14 md:w-16 md:h-16 bg-primary/10 text-primary rounded-2xl flex items-center justify-center mx-auto mb-6">
-            <Lock size={28} />
+        <div className="text-center mb-10">
+          <div className="w-20 h-20 bg-primary/10 text-primary rounded-[2rem] flex items-center justify-center mx-auto mb-6 shadow-inner">
+            <ShieldCheck size={40} />
           </div>
-          <h1 className="text-2xl md:text-3xl font-black tracking-tight text-slate-900">Admin Login</h1>
-          <p className="text-muted-foreground mt-2 text-sm md:text-base font-medium">TopPixels Agency Control</p>
+          <h1 className="text-3xl font-black tracking-tight text-slate-900 mb-2">Agency Admin</h1>
+          <p className="text-slate-400 text-sm font-bold uppercase tracking-widest">Secure Access Only</p>
         </div>
 
-        <form onSubmit={handleLogin} className="space-y-5 md:space-y-6">
-          <div>
-            <label className="block text-xs md:text-sm font-bold mb-2 uppercase tracking-wider text-slate-500">Email Address</label>
-            <div className="relative">
-               <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
+        <form onSubmit={handleLogin} className="space-y-6">
+          <div className="space-y-2">
+            <label className="block text-[10px] font-black mb-1 uppercase tracking-widest text-slate-400 ml-1">Email Address</label>
+            <div className="relative group">
+               <Mail className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-primary transition-colors" size={20} />
                <input 
                 type="email" 
-                defaultValue="admin@toppixels.pro"
-                className="w-full bg-slate-50 border-2 border-transparent focus:border-primary focus:bg-white p-3 md:p-4 pl-12 rounded-xl md:rounded-2xl outline-none transition-all font-medium text-slate-900" 
-                placeholder="email@example.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="w-full bg-slate-50 border-2 border-slate-50 focus:border-primary/20 focus:bg-white p-5 pl-14 rounded-2xl outline-none transition-all font-bold text-slate-900" 
+                placeholder="admin@toppixels.pro"
                 required
                />
             </div>
           </div>
 
-          <div>
-            <label className="block text-xs md:text-sm font-bold mb-2 uppercase tracking-wider text-slate-500">Password</label>
-            <div className="relative">
-               <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
+          <div className="space-y-2">
+            <label className="block text-[10px] font-black mb-1 uppercase tracking-widest text-slate-400 ml-1">Password</label>
+            <div className="relative group">
+               <Lock className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-primary transition-colors" size={20} />
                <input 
                 type="password" 
-                defaultValue="Swat69"
-                className="w-full bg-slate-50 border-2 border-transparent focus:border-primary focus:bg-white p-3 md:p-4 pl-12 rounded-xl md:rounded-2xl outline-none transition-all font-medium text-slate-900" 
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="w-full bg-slate-50 border-2 border-slate-50 focus:border-primary/20 focus:bg-white p-5 pl-14 rounded-2xl outline-none transition-all font-bold text-slate-900" 
                 placeholder="••••••••"
                 required
                />
@@ -65,11 +77,20 @@ export default function AdminLogin() {
           <button 
             type="submit"
             disabled={loading}
-            className="w-full bg-slate-900 text-white p-4 md:p-5 rounded-xl md:rounded-2xl font-bold flex items-center justify-center gap-2 hover:bg-slate-800 transition-all shadow-xl shadow-slate-200 disabled:opacity-70 mt-4"
+            className="w-full bg-slate-900 text-white p-6 rounded-[2rem] font-black flex items-center justify-center gap-3 hover:bg-primary transition-all shadow-2xl shadow-slate-200 disabled:opacity-70 group"
           >
-            {loading ? <Loader2 className="animate-spin" /> : "Sign In to Dashboard"}
+            {loading ? <Loader2 className="animate-spin" /> : <>SIGN IN TO PANEL <Lock size={18} className="group-hover:rotate-12 transition-transform" /></>}
           </button>
         </form>
+
+        <div className="mt-10 p-5 rounded-2xl bg-amber-50/50 border border-amber-100 flex items-start gap-4">
+           <Info className="text-amber-500 shrink-0" size={20} />
+           <div className="text-[11px] leading-relaxed">
+             <p className="font-black text-amber-900 uppercase mb-1">Default Credentials</p>
+             <p className="text-amber-800 font-medium">User: <span className="font-black">admin@toppixels.pro</span></p>
+             <p className="text-amber-800 font-medium">Pass: <span className="font-black">Swat69</span></p>
+           </div>
+        </div>
       </motion.div>
     </div>
   );
