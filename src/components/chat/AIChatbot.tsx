@@ -13,14 +13,6 @@ interface Message {
 }
 
 export default function AIChatbot() {
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  if (!mounted) return null;
-
   const handleClick = () => {
     window.dispatchEvent(new CustomEvent("open-calculator"));
   };

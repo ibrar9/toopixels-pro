@@ -3,7 +3,9 @@
 import { usePathname } from "next/navigation";
 import Navbar from "./Navbar";
 import Footer from "./Footer";
-import AIChatbot from "../chat/AIChatbot";
+import dynamic from "next/dynamic";
+
+const AIChatbot = dynamic(() => import("../chat/AIChatbot"), { ssr: false });
 
 export default function ConditionalLayout({
   children,
