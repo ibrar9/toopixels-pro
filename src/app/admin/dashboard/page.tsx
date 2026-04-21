@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { SiteConfig } from "@/lib/siteConfig";
 
 export default function AdminDashboard() {
+  const router = useRouter();
   const [activeTab, setActiveTab] = useState("Home");
   const [showProjectForm, setShowProjectForm] = useState(false);
   const [showBlogForm, setShowBlogForm] = useState(false);
