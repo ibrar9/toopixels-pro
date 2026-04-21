@@ -12,6 +12,12 @@ export const metadata: Metadata = {
   description: "We Build Creative Digital Experiences That Grow Brands. TopPixels is a professional agency since 2018.",
 };
 
+export const viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+};
+
 export default function RootLayout({
   children,
 }: Readonly<{

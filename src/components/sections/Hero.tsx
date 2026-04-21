@@ -10,6 +10,14 @@ import { SiteConfig } from "@/lib/siteConfig";
 
 const CalculatorModal = dynamic(() => import("../calculator/CalculatorModal"), { ssr: false });
 
+const DEFAULT_CONFIG = {
+  home: {
+    heroTitle: "Build your premium Digital Brand",
+    heroSubtitle: "We focus on quality and innovation to help your business reach its maximum potential in the digital world.",
+    heroImage: "https://images.unsplash.com/photo-1551434678-e076c223a692?auto=format&fit=crop&q=80&w=2070"
+  }
+};
+
 export default function Hero() {
   const [config, setConfig] = useState<SiteConfig | null>(null);
   const [isCalculatorOpen, setIsCalculatorOpen] = useState(false);
@@ -18,20 +26,11 @@ export default function Hero() {
     fetch('/api/config')
       .then(res => res.json())
       .then(data => setConfig(data))
-      .catch(err => {
-        console.error("Failed to load config:", err);
-        // Fallback or silence the error as we provide default below if needed
-      });
+      .catch(() => {}); // silently fallback to defaults
   }, []);
 
-  // Define a local default config to avoid blocking the UI if the API is slow or fails
-  const displayConfig = config || {
-    home: {
-      heroTitle: "Build your premium Digital Brand",
-      heroSubtitle: "We focus on quality and innovation to help your business reach its maximum potential in the digital world.",
-      heroImage: "https://images.unsplash.com/photo-1551434678-e076c223a692?auto=format&fit=crop&q=80&w=2070"
-    }
-  };
+  // Use API config if loaded, otherwise show defaults immediately — no blank page
+  const displayConfig = config || DEFAULT_CONFIG;
 
   return (
     <>
