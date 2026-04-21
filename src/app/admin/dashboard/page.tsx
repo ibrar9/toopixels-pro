@@ -154,6 +154,12 @@ export default function AdminDashboard() {
     fetch('/api/orders').then(res => res.json()).then(data => setOrders(data));
   };
 
+  const handleDeleteInquiry = async (id: string) => {
+    if (!confirm("Are you sure you want to delete this inquiry?")) return;
+    await fetch(`/api/inquiries?id=${id}`, { method: 'DELETE' });
+    fetch('/api/inquiries').then(res => res.json()).then(data => setInquiries(data));
+  };
+
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>, field: 'image' | 'gallery') => {
     const files = e.target.files;
     if (!files || files.length === 0) return;
@@ -446,19 +452,24 @@ export default function AdminDashboard() {
                            "{inq.message}"
                         </div>
 
-                        <div className="flex items-center justify-end gap-4">
-                           {inq.read ? (
-                              <button onClick={() => handleUpdateInquiry(inq.id, false)} className="flex items-center gap-2 text-xs font-bold text-slate-400 hover:text-primary transition-colors">
-                                 <EyeOff size={16} /> Mark Unread
-                              </button>
-                           ) : (
-                              <button onClick={() => handleUpdateInquiry(inq.id, true)} className="flex items-center gap-2 text-xs font-bold text-primary hover:text-slate-900 transition-colors">
-                                 <CheckCheck size={16} /> Mark as Read
-                              </button>
-                           )}
-                           <a href={`mailto:${inq.email}?subject=Reply to your inquiry - TopPixels&body=Hi ${inq.name},%0D%0A%0D%0AThank you for reaching out to TopPixels...`} className="flex items-center gap-2 bg-slate-900 text-white px-6 py-3 rounded-xl text-xs font-bold hover:scale-105 transition-all">
-                              <Reply size={16} /> Reply to {inq.name.split(' ')[0]}
-                           </a>
+                        <div className="flex items-center justify-between gap-4">
+                           <button onClick={() => handleDeleteInquiry(inq.id)} className="text-slate-300 hover:text-red-500 transition-colors flex items-center gap-1.5 text-xs font-bold">
+                              <Trash2 size={16} /> Delete
+                           </button>
+                           <div className="flex items-center gap-4">
+                              {inq.read ? (
+                                 <button onClick={() => handleUpdateInquiry(inq.id, false)} className="flex items-center gap-2 text-xs font-bold text-slate-400 hover:text-primary transition-colors">
+                                    <EyeOff size={16} /> Mark Unread
+                                 </button>
+                              ) : (
+                                 <button onClick={() => handleUpdateInquiry(inq.id, true)} className="flex items-center gap-2 text-xs font-bold text-primary hover:text-slate-900 transition-colors">
+                                    <CheckCheck size={16} /> Mark as Read
+                                 </button>
+                              )}
+                              <a href={`mailto:${inq.email}?subject=Reply to your inquiry - TopPixels&body=Hi ${inq.name},%0D%0A%0D%0AThank you for reaching out to TopPixels...`} className="flex items-center gap-2 bg-slate-900 text-white px-6 py-3 rounded-xl text-xs font-bold hover:scale-105 transition-all">
+                                 <Reply size={16} /> Reply to {inq.name.split(' ')[0]}
+                              </a>
+                           </div>
                         </div>
                      </div>
                    ))

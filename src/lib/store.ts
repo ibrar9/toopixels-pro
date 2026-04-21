@@ -104,6 +104,13 @@ export async function updateOrder(id: string, updates: any) {
   }
   return null;
 }
+export async function deleteInquiry(id: string) {
+  const data = await getData();
+  data.inquiries = (data.inquiries || []).filter((i: any) => i.id !== id);
+  await saveData(data);
+  return true;
+}
+
 export async function deleteOrder(id: string) {
   const data = await getData();
   data.orders = (data.orders || []).filter((o: any) => o.id !== id);

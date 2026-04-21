@@ -68,56 +68,6 @@
       ]
     }
   },
-  "inquiries": [
-    {
-      "name": "hi",
-      "email": "sadas@gmail.com",
-      "phone": "+97155672134",
-      "subject": "Project Inquiry",
-      "message": "hi",
-      "id": "1776694614651",
-      "date": "4/20/2026, 6:16:54 PM",
-      "read": true
-    }
-  ],
-  "orders": [
-    {
-      "name": "Ibrar AlI",
-      "email": "iBRARA4142@GMAIL.COM",
-      "phone": "0556721324",
-      "service": "graphic",
-      "subService": "Logo Design",
-      "details": {
-        "logoType": "Basic Logo (Text / Minimal)",
-        "colorOption": "2–3 Color Options",
-        "revisionCount": "5 Revisions",
-        "deliveryTime": "48 Hours",
-        "fileFormat": "Transparent PNG + Vector",
-        "mockupOption": "3 Mockups"
-      },
-      "totalEstimate": 229,
-      "id": "1776755239740",
-      "date": "4/21/2026, 11:07:19 AM",
-      "status": "pending"
-    },
-    {
-      "name": "IBRAR",
-      "email": "Ibrar@gmail.com",
-      "phone": "+97155672134",
-      "service": "graphic",
-      "subService": "Logo Design",
-      "details": {
-        "logoType": "Basic Logo (Text / Minimal)",
-        "colorOption": "2–3 Color Options",
-        "revisionCount": "5 Revisions",
-        "deliveryTime": "48 Hours",
-        "fileFormat": "Transparent PNG + Vector",
-        "mockupOption": "3 Mockups"
-      },
-      "totalEstimate": 229,
-      "id": "1776755365836",
-      "date": "4/21/2026, 11:09:25 AM",
-      "status": "pending"
-    }
-  ]
+  "inquiries": [],
+  "orders": []
 }

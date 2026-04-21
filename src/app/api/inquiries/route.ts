@@ -24,3 +24,14 @@ export async function PATCH(request: Request) {
   const updated = await updateInquiry(id, { read });
   return NextResponse.json(updated);
 }
+
+export async function DELETE(request: Request) {
+  const { searchParams } = new URL(request.url);
+  const id = searchParams.get('id');
+  const { deleteInquiry } = await import('@/lib/store');
+  if (id) {
+    await deleteInquiry(id);
+    return NextResponse.json({ success: true });
+  }
+  return NextResponse.json({ error: 'Missing ID' }, { status: 400 });
+}
