@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/navigation';
+import { NextResponse } from 'next/server';
 import { getConfig, getData } from '@/lib/store';
 
 // This is the Personality and Knowledge Base of the AI
