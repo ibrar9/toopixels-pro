@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { LayoutDashboard, FileText, Image, MessageSquare, Plus, CheckCircle, X, Home, Info, PhoneCall, Save, Loader2, Settings, Trash2, Upload, Mail, Reply, Circle, CheckCheck, Eye, EyeOff, Rocket } from "lucide-react";
+import { LayoutDashboard, FileText, Image, MessageSquare, Plus, CheckCircle, X, Home, Info, PhoneCall, Save, Loader2, Settings, Trash2, Upload, Mail, Reply, Circle, CheckCheck, Eye, EyeOff, Rocket, Lock } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { SiteConfig } from "@/lib/siteConfig";
 
