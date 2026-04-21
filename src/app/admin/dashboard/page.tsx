@@ -260,20 +260,28 @@ export default function AdminDashboard() {
         </nav>
       </aside>
 
-      <main className="flex-1 ml-0 lg:ml-72 p-8 md:p-12">
-        <header className="flex justify-between items-center mb-12">
-           <div>
-             <h1 className="text-4xl font-black text-slate-900">{activeTab}</h1>
-             <p className="text-muted-foreground font-medium">Manage your agency content</p>
+      <main className="flex-1 ml-0 lg:ml-72 p-4 md:p-12">
+        <header className="flex justify-between items-center mb-8 md:mb-12">
+           <div className="flex items-center gap-4">
+             <button 
+               onClick={() => setIsMobileMenuOpen(true)}
+               className="lg:hidden p-2 bg-white rounded-xl shadow-sm border text-slate-600"
+             >
+               <LayoutDashboard size={24} />
+             </button>
+             <div>
+               <h1 className="text-2xl md:text-4xl font-black text-slate-900">{activeTab}</h1>
+               <p className="text-xs md:text-sm text-muted-foreground font-medium">Manage your content</p>
+             </div>
            </div>
            {activeTab !== "Portfolio" && activeTab !== "Blogs" && activeTab !== "Inquiries" && activeTab !== "Orders" && (
-             <button onClick={handleUpdateConfig} disabled={loading} className="bg-primary text-white px-8 py-4 rounded-2xl font-bold flex items-center gap-2 hover:scale-105 shadow-xl disabled:opacity-50">
-               {loading ? <Loader2 className="animate-spin" /> : <><Save size={20} /> Save Changes</>}
+             <button onClick={handleUpdateConfig} disabled={loading} className="bg-primary text-white px-4 md:px-8 py-3 md:py-4 rounded-xl md:rounded-2xl text-xs md:text-base font-bold flex items-center gap-2 hover:scale-105 shadow-xl disabled:opacity-50">
+               {loading ? <Loader2 className="animate-spin" /> : <><Save size={20} /> <span className="hidden md:inline">Save Changes</span><span className="md:hidden">Save</span></>}
              </button>
            )}
         </header>
 
-        <div className="bg-white rounded-[3rem] p-12 shadow-sm border">
+        <div className="bg-white rounded-3xl md:rounded-[3rem] p-6 md:p-12 shadow-sm border">
            {activeTab === "Home" && (
               <div className="space-y-8">
                  <div><label className="block text-sm font-bold mb-3">Hero Title</label><textarea value={config.home.heroTitle} onChange={(e) => setConfig({...config, home: {...config.home, heroTitle: e.target.value}})} className="w-full bg-slate-50 p-6 rounded-2xl border-none outline-none focus:ring-2 ring-primary font-bold text-xl" rows={3} /></div>
