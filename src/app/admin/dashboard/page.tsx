@@ -17,6 +17,7 @@ export default function AdminDashboard() {
   const [newBlogCat, setNewBlogCat] = useState("");
   const [orderFilter, setOrderFilter] = useState("all");
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
   
   // Project Form State
   const [projectData, setProjectData] = useState({ 
@@ -31,6 +32,8 @@ export default function AdminDashboard() {
   // Blog Form State
   const [blogData, setBlogData] = useState({ title: "", category: "Technology", excerpt: "", content: "", image: "https://images.unsplash.com/photo-1542744173-8e7e53415bb0?auto=format" });
 
+  // Projects State
+  const [projects, setProjects] = useState<any[]>([]);
   // Blogs State
   const [blogs, setBlogs] = useState<any[]>([]);
   // Inquiries State
@@ -60,6 +63,7 @@ export default function AdminDashboard() {
         }));
       }
     });
+    fetch('/api/projects').then(res => res.json()).then(data => setProjects(data));
     fetch('/api/inquiries').then(res => res.json()).then(data => setInquiries(data));
     fetch('/api/blogs').then(res => res.json()).then(data => setBlogs(data));
     fetch('/api/orders').then(res => res.json()).then(data => setOrders(data));
@@ -77,6 +81,8 @@ export default function AdminDashboard() {
     await fetch('/api/projects', { method: 'POST', body: JSON.stringify(projectData) });
     setShowProjectForm(false);
     alert("Project Added!");
+    // Refresh projects
+    fetch('/api/projects').then(res => res.json()).then(data => setProjects(data));
     setLoading(false);
   };
 
@@ -171,6 +177,13 @@ export default function AdminDashboard() {
     if (!confirm("Are you sure you want to delete this inquiry?")) return;
     await fetch(`/api/inquiries?id=${id}`, { method: 'DELETE' });
     fetch('/api/inquiries').then(res => res.json()).then(data => setInquiries(data));
+  };
+
+  const handleDeleteProject = async (id: string) => {
+    setConfirmDeleteId(null);
+    await fetch(`/api/projects?id=${id}`, { method: 'DELETE' });
+    // Immediately remove from local state
+    setProjects(prev => prev.filter((p: any) => p.id !== id));
   };
 
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>, field: 'image' | 'gallery') => {
@@ -355,13 +368,68 @@ export default function AdminDashboard() {
             )}
 
            {activeTab === "Portfolio" && (
-              <div className="text-center py-20">
-                 <div className="w-20 h-20 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-6 text-slate-400">
-                    <Image size={40} />
+              <div className="space-y-12">
+                 <div className="flex justify-between items-center">
+                    <div>
+                       <h3 className="text-2xl font-black text-slate-900">Portfolio Projects</h3>
+                       <p className="text-slate-500">Showcase your best work here.</p>
+                    </div>
+                    <button onClick={() => setShowProjectForm(true)} className="bg-primary text-white px-8 py-4 rounded-2xl font-bold flex items-center gap-2 shadow-xl hover:scale-105 transition-all"><Plus size={20}/> New Project</button>
                  </div>
-                 <h3 className="text-2xl font-black text-slate-900 mb-2">Portfolio Projects</h3>
-                 <p className="text-slate-500 mb-10">Upload high-quality images of your work.</p>
-                 <button onClick={() => setShowProjectForm(true)} className="bg-slate-900 text-white px-10 py-5 rounded-2xl font-bold hover:scale-105 transition-all shadow-xl">Add New Project</button>
+
+                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    {projects.length === 0 ? (
+                       <div className="col-span-full text-center py-20 text-slate-400 font-bold border-2 border-dashed rounded-[3rem]">No projects found. Add your first one! 🎨</div>
+                    ) : (
+                       projects.slice().reverse().map((proj, idx) => (
+                         <div key={proj.id || idx} className="bg-slate-50 rounded-[2.5rem] overflow-hidden border border-slate-100 group relative">
+                            {/* Inline Delete Confirmation */}
+                            {confirmDeleteId === proj.id ? (
+                              <div className="absolute inset-0 bg-white/95 backdrop-blur z-20 flex flex-col items-center justify-center gap-4 rounded-[2.5rem] p-6">
+                                <p className="font-black text-slate-900 text-center">Delete this project?</p>
+                                <p className="text-xs text-slate-500 text-center">{proj.title}</p>
+                                <div className="flex gap-3">
+                                  <button
+                                    onClick={() => handleDeleteProject(proj.id)}
+                                    className="bg-red-500 text-white px-6 py-2 rounded-xl font-bold text-sm hover:bg-red-600 transition-colors"
+                                  >
+                                    Yes, Delete
+                                  </button>
+                                  <button
+                                    onClick={() => setConfirmDeleteId(null)}
+                                    className="bg-slate-100 text-slate-700 px-6 py-2 rounded-xl font-bold text-sm hover:bg-slate-200 transition-colors"
+                                  >
+                                    Cancel
+                                  </button>
+                                </div>
+                              </div>
+                            ) : (
+                              <button 
+                                onClick={() => setConfirmDeleteId(proj.id)}
+                                className="absolute top-4 right-4 z-10 bg-white/90 backdrop-blur p-2 rounded-full text-slate-400 hover:text-red-500 hover:bg-red-50 transition-all shadow-sm"
+                              >
+                                <Trash2 size={18} />
+                              </button>
+                            )}
+                            <div className="aspect-video relative overflow-hidden bg-slate-200">
+                               {proj.image ? (
+                                 <img src={proj.image} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" alt={proj.title} />
+                               ) : (
+                                 <div className="w-full h-full bg-slate-200 flex items-center justify-center text-slate-400">
+                                   <Image size={40} />
+                                 </div>
+                               )}
+                               <div className="absolute top-4 left-4 bg-white/90 backdrop-blur px-3 py-1 rounded-full text-[10px] font-black uppercase text-primary">{proj.category}</div>
+                            </div>
+                            <div className="p-8">
+                               <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2">{proj.subCategory}</p>
+                               <h4 className="text-lg font-black text-slate-900 mb-4 line-clamp-2">{proj.title}</h4>
+                               <p className="text-sm text-slate-500 line-clamp-2 italic">{proj.description}</p>
+                            </div>
+                         </div>
+                       ))
+                    )}
+                 </div>
               </div>
            )}
 

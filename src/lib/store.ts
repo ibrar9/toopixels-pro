@@ -118,6 +118,13 @@ export async function deleteOrder(id: string) {
   return true;
 }
 
+export async function deleteProject(id: string) {
+  const data = await getData();
+  data.projects = (data.projects || []).filter((p: any) => p.id !== id);
+  await saveData(data);
+  return true;
+}
+
 export async function addVisit(visit: { date: string; city: string; country: string }) {
   const data = await getData();
   if (!data.analytics) data.analytics = [];

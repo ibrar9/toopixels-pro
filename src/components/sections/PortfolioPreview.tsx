@@ -1,14 +1,24 @@
+"use client";
+
 import { ArrowRight, Plus } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
-
-const projects = [
-  { title: "Brand Identity", category: "Graphic Design", image: "https://images.unsplash.com/photo-1541462608141-ad4d0b942085?auto=format&fit=crop&q=80&w=2426" },
-  { title: "Corporate Platform", category: "Web Development", image: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80&w=2426" },
-  { title: "Marketing Strategy", category: "Digital Marketing", image: "https://images.unsplash.com/photo-1551434678-e076c223a692?auto=format&fit=crop&q=80&w=2426" },
-];
+import { useState, useEffect } from "react";
 
 export default function PortfolioPreview() {
+  const [projects, setProjects] = useState<any[]>([]);
+
+  useEffect(() => {
+    fetch('/api/projects')
+      .then(res => res.json())
+      .then(data => {
+        // Show the 3 most recently added projects that have an image
+        const withImages = (data || []).filter((p: any) => p.image);
+        setProjects(withImages.slice(-3).reverse());
+      })
+      .catch(() => {});
+  }, []);
+
   return (
     <section id="portfolio" className="section-padding overflow-hidden">
       <div className="max-w-7xl mx-auto px-6">

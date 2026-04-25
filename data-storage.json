@@ -1,20 +1,13 @@
 {
   "projects": [
     {
-      "id": "1",
-      "title": "EcoBrand Identity",
+      "title": "Logo",
       "category": "Graphics Design",
-      "description": "Full visual identity and logo design for a sustainable tech company.",
-      "image": "https://images.unsplash.com/photo-1541462608141-ad4d0b942085?auto=format&fit=crop&q=80&w=2426",
-      "featured": true
-    },
-    {
-      "id": "2",
-      "title": "FinTech Platform",
-      "category": "Website Development",
-      "description": "Corporate banking platform with high security and rapid performance.",
-      "image": "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80&w=2426",
-      "featured": true
+      "subCategory": "General",
+      "description": "Logo",
+      "image": "https://images.unsplash.com/photo-1541462608141-ad4d0b942085?auto=format",
+      "gallery": [],
+      "id": "1777124807923"
     }
   ],
   "blogs": [
@@ -73,6 +66,16 @@
   "analytics": [
     {
       "date": "2026-04-21T12:12:34.637Z",
+      "city": "Unknown",
+      "country": "Unknown"
+    },
+    {
+      "date": "2026-04-25T13:13:53.151Z",
+      "city": "Unknown",
+      "country": "Unknown"
+    },
+    {
+      "date": "2026-04-25T13:46:25.289Z",
       "city": "Unknown",
       "country": "Unknown"
     }

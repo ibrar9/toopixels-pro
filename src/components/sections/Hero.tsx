@@ -47,11 +47,12 @@ export default function Hero() {
           </div>
           
           <h1 className="heading-xl mb-8 text-slate-900">
-            Best Digital <br /> <span className="text-primary italic">Agency in Dubai</span>
+            {(displayConfig.home.heroTitle || "Build your premium Digital Brand").split(' ').slice(0, -2).join(' ')} <br /> 
+            <span className="text-primary italic">{(displayConfig.home.heroTitle || "Build your premium Digital Brand").split(' ').slice(-2).join(' ')}</span>
           </h1>
           
           <p className="text-xl text-muted-foreground mb-12 max-w-lg leading-relaxed font-medium">
-            The leading choice for premium digital solutions in <b>Dubai, Abu Dhabi, and across the UAE</b>. Transforming brands since 2018.
+            {displayConfig.home.heroSubtitle}
           </p>
 
           <div className="flex flex-col sm:flex-row gap-6">
