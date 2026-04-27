@@ -12,7 +12,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "No files uploaded" }, { status: 400 });
     }
 
-    const uploadDir = path.join(process.cwd(), 'public', 'uploads');
+    const uploadDir = path.join(process.cwd(), 'data-uploads');
     if (!fs.existsSync(uploadDir)) {
       fs.mkdirSync(uploadDir, { recursive: true });
     }
@@ -27,7 +27,7 @@ export async function POST(request: Request) {
       const filepath = path.join(uploadDir, filename);
 
       fs.writeFileSync(filepath, buffer);
-      urls.push(`/uploads/${filename}`);
+      urls.push(`/api/media/${filename}`);
     }
 
     return NextResponse.json({ urls });

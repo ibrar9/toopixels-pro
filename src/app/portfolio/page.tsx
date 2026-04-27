@@ -10,7 +10,7 @@ import { Project } from "@/lib/db";
 // External URLs → next/image with full optimization
 function SmartImage({ src, alt, className }: { src: string; alt: string; className?: string }) {
   if (!src) return null;
-  if (src.startsWith('/uploads/')) {
+  if (src.startsWith('/uploads/') || src.startsWith('/api/media/')) {
     return (
       <img
         src={src}
