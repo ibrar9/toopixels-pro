@@ -63,7 +63,7 @@ export default function AdminDashboard() {
         }));
       }
     });
-    fetch('/api/projects').then(res => res.json()).then(data => setProjects(data));
+    fetch('/api/projects?_t=' + Date.now(), { cache: 'no-store' }).then(res => res.json()).then(data => setProjects(data));
     fetch('/api/inquiries').then(res => res.json()).then(data => setInquiries(data));
     fetch('/api/blogs').then(res => res.json()).then(data => setBlogs(data));
     fetch('/api/orders').then(res => res.json()).then(data => setOrders(data));
@@ -82,7 +82,7 @@ export default function AdminDashboard() {
     setShowProjectForm(false);
     alert("Project Added!");
     // Refresh projects
-    fetch('/api/projects').then(res => res.json()).then(data => setProjects(data));
+    fetch('/api/projects?_t=' + Date.now(), { cache: 'no-store' }).then(res => res.json()).then(data => setProjects(data));
     setLoading(false);
   };
 

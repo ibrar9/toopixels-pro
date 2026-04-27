@@ -1,10 +1,35 @@
 "use client";
 
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import { ArrowUpRight, Loader2 } from "lucide-react";
 import { Project } from "@/lib/db";
+
+// Smart image: local /uploads/ → native img tag (bypasses Next.js domain restriction)
+// External URLs → next/image with full optimization
+function SmartImage({ src, alt, className }: { src: string; alt: string; className?: string }) {
+  if (!src) return null;
+  if (src.startsWith('/uploads/')) {
+    return (
+      <img
+        src={src}
+        alt={alt}
+        className={className || "w-full h-full object-cover"}
+        style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+      />
+    );
+  }
+  return (
+    <Image
+      src={src}
+      alt={alt}
+      fill
+      className={className || "object-cover"}
+      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+    />
+  );
+}
 
 
 
@@ -16,23 +41,29 @@ export default function Portfolio() {
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
   const [config, setConfig] = useState<any>(null);
 
-  useEffect(() => {
-    const init = async () => {
-      try {
-        const [projRes, confRes] = await Promise.all([
-          fetch('/api/projects'),
-          fetch('/api/config')
-        ]);
-        setProjects(await projRes.json());
-        setConfig(await confRes.json());
-      } catch (err) {
-        console.error("Sync failed");
-      } finally {
-        setLoading(false);
-      }
-    };
-    init();
+  const loadData = useCallback(async () => {
+    try {
+      const t = Date.now();
+      const [projRes, confRes] = await Promise.all([
+        fetch(`/api/projects?_t=${t}`, { cache: 'no-store' }),
+        fetch(`/api/config?_t=${t}`, { cache: 'no-store' })
+      ]);
+      setProjects(await projRes.json());
+      setConfig(await confRes.json());
+    } catch (err) {
+      console.error("Sync failed");
+    } finally {
+      setLoading(false);
+    }
   }, []);
+
+  useEffect(() => {
+    loadData();
+    // Refresh when user switches back to this tab
+    const onVisible = () => { if (document.visibilityState === 'visible') loadData(); };
+    document.addEventListener('visibilitychange', onVisible);
+    return () => document.removeEventListener('visibilitychange', onVisible);
+  }, [loadData]);
 
   const primaryCategories = config?.portfolioCategories ? ["All", ...Object.keys(config.portfolioCategories)] : ["All"];
   const subCategories = config?.portfolioCategories || {};
@@ -127,12 +158,10 @@ export default function Portfolio() {
                        onClick={() => setSelectedProject(item)}
                     >
                         <div className="aspect-[4/3] rounded-[2rem] overflow-hidden bg-slate-100 mb-6 border border-slate-50 shadow-sm relative">
-                          <Image 
-                            src={item.image} 
-                            alt={item.title} 
-                            fill 
-                            className="object-cover transition-transform duration-700 group-hover:scale-110" 
-                            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                          <SmartImage
+                            src={item.image}
+                            alt={item.title}
+                            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                           />
                         </div>
                         <div className="flex items-center justify-between px-2">
@@ -158,12 +187,12 @@ export default function Portfolio() {
                
                <div className="w-full md:w-3/5 bg-slate-50 overflow-y-auto p-8 custom-scrollbar">
                   <div className="relative w-full aspect-video rounded-2xl mb-6 shadow-2xl overflow-hidden">
-                    <Image src={selectedProject.image} fill className="object-cover" alt={selectedProject.title} />
+                    <SmartImage src={selectedProject.image} alt={selectedProject.title} className="w-full h-full object-cover" />
                   </div>
                   <div className="grid grid-cols-1 gap-6">
                     {selectedProject.gallery?.map((img, i) => (
                       <div key={i} className="relative w-full aspect-video rounded-2xl shadow-lg overflow-hidden">
-                        <Image src={img} fill className="object-cover" alt={`View ${i + 1}`} />
+                        <SmartImage src={img} alt={`View ${i + 1}`} className="w-full h-full object-cover" />
                       </div>
                     ))}
                   </div>
