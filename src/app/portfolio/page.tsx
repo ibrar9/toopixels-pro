@@ -144,12 +144,11 @@ export default function Portfolio() {
                 <Loader2 className="animate-spin text-primary" size={48} />
               </div>
             ) : (
-              <motion.div layout className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                <AnimatePresence mode="popLayout">
+              <motion.div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <AnimatePresence>
                   {filteredItems.map((item, i) => (
                     <motion.div
                       key={item.id}
-                      layout
                       initial={{ opacity: 0, scale: 0.9 }}
                       animate={{ opacity: 1, scale: 1 }}
                       exit={{ opacity: 0, scale: 0.9 }}
@@ -183,7 +182,7 @@ export default function Portfolio() {
         {selectedProject && (
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-[1000] flex items-center justify-center p-6 bg-slate-950/80 backdrop-blur-xl">
             <motion.div initial={{ y: 50, scale: 0.95 }} animate={{ y: 0, scale: 1 }} exit={{ y: 50, scale: 0.95 }} className="bg-white w-full max-w-6xl max-h-[90vh] rounded-[3rem] overflow-hidden flex flex-col md:flex-row relative">
-               <button onClick={() => setSelectedProject(null)} className="absolute top-8 right-8 z-50 bg-white/80 backdrop-blur px-6 py-3 rounded-full font-black text-xs shadow-xl border hover:bg-white transition-all">CLOSE VIEW</button>
+               <button onClick={() => setSelectedProject(null)} className="absolute top-4 right-4 md:top-8 md:right-8 z-50 bg-white/80 backdrop-blur px-6 py-3 rounded-full font-black text-xs shadow-xl border hover:bg-white transition-all">CLOSE VIEW</button>
                
                <div className="w-full md:w-3/5 bg-slate-50 overflow-y-auto p-8 custom-scrollbar">
                   <div className="relative w-full aspect-video rounded-2xl mb-6 shadow-2xl overflow-hidden">

@@ -43,8 +43,8 @@ export default function Navbar() {
     <>
     <nav
       className={cn(
-        "fixed top-0 w-full z-50 transition-all duration-300 px-6 py-4",
-        scrolled ? "bg-white/80 backdrop-blur-lg border-bottom shadow-sm py-3" : "bg-transparent"
+        "fixed top-0 w-full z-[100] transition-all duration-300 px-6 py-4",
+        scrolled ? "bg-white/85 backdrop-blur-xl border-b border-slate-100 shadow-sm py-3" : "bg-transparent"
       )}
     >
       <div className="max-w-7xl mx-auto flex items-center justify-between">
@@ -83,7 +83,7 @@ export default function Navbar() {
         </div>
 
         {/* Mobile Toggle */}
-        <button className="md:hidden text-foreground" onClick={() => setIsOpen(!isOpen)}>
+        <button className="md:hidden text-foreground p-2 -mr-2 relative z-[110]" onClick={() => setIsOpen(!isOpen)}>
           {isOpen ? <X size={24} /> : <Menu size={24} />}
         </button>
       </div>
@@ -95,7 +95,7 @@ export default function Navbar() {
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
-            className="absolute top-full left-0 w-full bg-white border-t p-6 md:hidden shadow-xl"
+            className="absolute top-[100%] left-0 w-full bg-white/95 backdrop-blur-xl border-b border-slate-100 p-6 md:hidden shadow-2xl z-[90]"
           >
             <div className="flex flex-col gap-4">
               {navLinks.map((link) => (
