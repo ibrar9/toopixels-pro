@@ -15,8 +15,7 @@ function SmartImage({ src, alt, className }: { src: string; alt: string; classNa
       <img
         src={src}
         alt={alt}
-        className={className || "w-full h-full object-cover"}
-        style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+        className={className || "w-full h-auto block"}
       />
     );
   }
@@ -185,13 +184,13 @@ export default function Portfolio() {
                <button onClick={() => setSelectedProject(null)} className="absolute top-4 right-4 md:top-8 md:right-8 z-50 bg-white/80 backdrop-blur px-6 py-3 rounded-full font-black text-xs shadow-xl border hover:bg-white transition-all">CLOSE VIEW</button>
                
                <div className="w-full md:w-3/5 bg-slate-50 overflow-y-auto p-8 custom-scrollbar">
-                  <div className="relative w-full aspect-video rounded-2xl mb-6 shadow-2xl overflow-hidden">
-                    <SmartImage src={selectedProject.image} alt={selectedProject.title} className="w-full h-full object-cover" />
+                  <div className="w-full rounded-2xl mb-6 shadow-2xl overflow-hidden">
+                    <SmartImage src={selectedProject.image} alt={selectedProject.title} className="w-full h-auto block" />
                   </div>
                   <div className="grid grid-cols-1 gap-6">
                     {selectedProject.gallery?.map((img, i) => (
-                      <div key={i} className="relative w-full aspect-video rounded-2xl shadow-lg overflow-hidden">
-                        <SmartImage src={img} alt={`View ${i + 1}`} className="w-full h-full object-cover" />
+                      <div key={i} className="w-full rounded-2xl shadow-lg overflow-hidden">
+                        <SmartImage src={img} alt={`View ${i + 1}`} className="w-full h-auto block" />
                       </div>
                     ))}
                   </div>
@@ -208,8 +207,10 @@ export default function Portfolio() {
                   <div className="p-8 rounded-3xl bg-slate-50 border border-slate-100">
                     <p className="text-[10px] font-black uppercase text-slate-400 mb-4 tracking-widest">Project Details</p>
                     <div className="space-y-4">
-                       <div className="flex justify-between border-b pb-2"><span className="text-xs font-bold text-slate-500">Industry</span><span className="text-xs font-black">Digital Tech</span></div>
-                       <div className="flex justify-between border-b pb-2"><span className="text-xs font-bold text-slate-500">Service</span><span className="text-xs font-black">{selectedProject.category}</span></div>
+                       <div className="flex justify-between border-b pb-2"><span className="text-xs font-bold text-slate-500">Category</span><span className="text-xs font-black">{selectedProject.category}</span></div>
+                       {selectedProject.subCategory && (
+                         <div className="flex justify-between border-b pb-2"><span className="text-xs font-bold text-slate-500">Type</span><span className="text-xs font-black">{selectedProject.subCategory}</span></div>
+                       )}
                     </div>
                   </div>
                </div>

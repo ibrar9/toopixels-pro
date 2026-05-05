@@ -15,6 +15,11 @@ export const metadata: Metadata = {
   },
   description: "TopPixels is the leading digital agency in the UAE (Dubai, Abu Dhabi, Sharjah). Specializing in premium Logo Design, Website Development, and ROI-driven Digital Marketing since 2018.",
   keywords: ["digital agency dubai", "web development uae", "logo design abu dhabi", "marketing agency sharjah", "best branding agency uae"],
+  icons: {
+    icon: "/favicon.png",
+    shortcut: "/favicon.png",
+    apple: "/favicon.png",
+  },
   openGraph: {
     title: "TopPixels | Best Digital Agency in UAE",
     description: "Premium Branding, Web & Marketing Solutions in Dubai & UAE.",
