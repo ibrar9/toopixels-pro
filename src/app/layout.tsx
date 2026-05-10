@@ -9,32 +9,36 @@ import { getConfig } from "@/lib/store";
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter", display: 'swap' });
 const outfit = Outfit({ subsets: ["latin"], variable: "--font-outfit", display: 'swap' });
 
-export const metadata: Metadata = {
-  title: {
-    default: "Best Digital Agency in UAE | TopPixels - Branding & Web Solutions",
-    template: "%s | TopPixels UAE"
-  },
-  description: "TopPixels is the leading digital agency in the UAE (Dubai, Abu Dhabi, Sharjah). Specializing in premium Logo Design, Website Development, and ROI-driven Digital Marketing since 2018.",
-  keywords: ["digital agency dubai", "web development uae", "logo design abu dhabi", "marketing agency sharjah", "best branding agency uae"],
-  icons: {
-    icon: "/favicon.png",
-    shortcut: "/favicon.png",
-    apple: "/favicon.png",
-  },
-  openGraph: {
-    title: "TopPixels | Best Digital Agency in UAE",
-    description: "Premium Branding, Web & Marketing Solutions in Dubai & UAE.",
-    url: "https://toopixels.pro",
-    siteName: "TopPixels UAE",
-    images: [{ url: "https://toopixels.pro/og-image.jpg" }],
-    type: "website",
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "TopPixels | Digital Agency UAE",
-    description: "Premium Digital Solutions in Dubai.",
-  }
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const config = await getConfig();
+  
+  return {
+    title: {
+      default: "Best Digital Agency in UAE | TopPixels - Branding & Web Solutions",
+      template: "%s | TopPixels UAE"
+    },
+    description: "TopPixels is the leading digital agency in the UAE (Dubai, Abu Dhabi, Sharjah). Specializing in premium Logo Design, Website Development, and ROI-driven Digital Marketing since 2018.",
+    keywords: ["digital agency dubai", "web development uae", "logo design abu dhabi", "marketing agency sharjah", "best branding agency uae"],
+    icons: {
+      icon: config?.faviconImage || "/favicon.png",
+      shortcut: config?.faviconImage || "/favicon.png",
+      apple: config?.faviconImage || "/favicon.png",
+    },
+    openGraph: {
+      title: "TopPixels | Best Digital Agency in UAE",
+      description: "Premium Branding, Web & Marketing Solutions in Dubai & UAE.",
+      url: "https://toopixels.pro",
+      siteName: "TopPixels UAE",
+      images: [{ url: "https://toopixels.pro/og-image.jpg" }],
+      type: "website",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: "TopPixels | Digital Agency UAE",
+      description: "Premium Digital Solutions in Dubai.",
+    }
+  };
+}
 
 export default async function RootLayout({
   children,
@@ -84,7 +88,6 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <head>
-        <link rel="icon" href={config?.faviconImage || "/favicon.png"} />
         <link rel="preconnect" href="https://images.unsplash.com" />
         <link rel="dns-prefetch" href="https://images.unsplash.com" />
         <script
