@@ -19,6 +19,8 @@ export interface SiteConfig {
   };
   portfolioCategories: Record<string, string[]>;
   blogCategories: string[];
+  logoImage?: string;
+  faviconImage?: string;
 }
 
 export const defaultSiteConfig: SiteConfig = {

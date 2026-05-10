@@ -1,6 +1,8 @@
-export const dynamic = 'force-dynamic';
 import { NextResponse } from 'next/server';
 import { getInquiries, addInquiry } from '@/lib/store';
+import { revalidatePath } from 'next/cache';
+
+export const dynamic = 'force-dynamic';
 
 export async function GET() {
   const inquiries = await getInquiries();
@@ -15,6 +17,10 @@ export async function POST(request: Request) {
     date: new Date().toLocaleString(),
     read: false
   });
+  
+  revalidatePath('/admin/dashboard');
+  revalidatePath('/api/inquiries');
+  
   return NextResponse.json(newInquiry);
 }
 
@@ -23,6 +29,10 @@ export async function PATCH(request: Request) {
   const { id, read } = body;
   const { updateInquiry } = await import('@/lib/store');
   const updated = await updateInquiry(id, { read });
+  
+  revalidatePath('/admin/dashboard');
+  revalidatePath('/api/inquiries');
+  
   return NextResponse.json(updated);
 }
 
@@ -32,6 +42,8 @@ export async function DELETE(request: Request) {
   const { deleteInquiry } = await import('@/lib/store');
   if (id) {
     await deleteInquiry(id);
+    revalidatePath('/admin/dashboard');
+    revalidatePath('/api/inquiries');
     return NextResponse.json({ success: true });
   }
   return NextResponse.json({ error: 'Missing ID' }, { status: 400 });

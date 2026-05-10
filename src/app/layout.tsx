@@ -4,6 +4,7 @@ import "./globals.css";
 import ConditionalLayout from "@/components/layout/ConditionalLayout";
 import Script from "next/script";
 import VisitTracker from "@/components/layout/VisitTracker";
+import { getConfig } from "@/lib/store";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter", display: 'swap' });
 const outfit = Outfit({ subsets: ["latin"], variable: "--font-outfit", display: 'swap' });
@@ -35,16 +36,18 @@ export const metadata: Metadata = {
   }
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const config = await getConfig();
+  
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "ProfessionalService",
     "name": "TopPixels",
-    "image": "https://toopixels.pro/logo.png",
+    "image": config?.logoImage || "https://toopixels.pro/logo.png",
     "@id": "https://toopixels.pro",
     "url": "https://toopixels.pro",
     "telephone": "+971556721324",
@@ -81,6 +84,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
+        <link rel="icon" href={config?.faviconImage || "/favicon.png"} />
         <link rel="preconnect" href="https://images.unsplash.com" />
         <link rel="dns-prefetch" href="https://images.unsplash.com" />
         <script
@@ -90,7 +94,7 @@ export default function RootLayout({
       </head>
       <body className={`${inter.variable} ${outfit.variable} font-sans`}>
         <VisitTracker />
-        <ConditionalLayout>{children}</ConditionalLayout>
+        <ConditionalLayout logoImage={config?.logoImage}>{children}</ConditionalLayout>
         <Script id="clear-sw" strategy="afterInteractive">
           {`
             if ('serviceWorker' in navigator) {

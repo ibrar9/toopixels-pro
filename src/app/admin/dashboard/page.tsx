@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { LayoutDashboard, FileText, Image, MessageSquare, Plus, CheckCircle, X, Home, Info, PhoneCall, Save, Loader2, Settings, Trash2, Upload, Mail, Reply, Circle, CheckCheck, Eye, EyeOff, Rocket, Lock } from "lucide-react";
+import { LayoutDashboard, FileText, Image, MessageSquare, Plus, CheckCircle, X, Home, Info, PhoneCall, Save, Loader2, Settings, Trash2, Upload, Mail, Reply, Circle, CheckCheck, Eye, EyeOff, Rocket, Lock, Pencil } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { SiteConfig } from "@/lib/siteConfig";
 
@@ -20,14 +20,16 @@ export default function AdminDashboard() {
   const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
   
   // Project Form State
-  const [projectData, setProjectData] = useState({ 
+  const [editingProjectId, setEditingProjectId] = useState<string | null>(null);
+  const defaultProjectData = { 
     title: "", 
     category: "", 
     subCategory: "",
     description: "",
     image: "https://images.unsplash.com/photo-1541462608141-ad4d0b942085?auto=format",
     gallery: [] as string[]
-  });
+  };
+  const [projectData, setProjectData] = useState(defaultProjectData);
 
   // Blog Form State
   const [blogData, setBlogData] = useState({ title: "", category: "Technology", excerpt: "", content: "", image: "https://images.unsplash.com/photo-1542744173-8e7e53415bb0?auto=format" });
@@ -75,12 +77,19 @@ export default function AdminDashboard() {
     router.push("/admin/login");
   };
 
-  const handleCreateProject = async (e: React.FormEvent) => {
+  const handleSaveProject = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    await fetch('/api/projects', { method: 'POST', body: JSON.stringify(projectData) });
+    if (editingProjectId) {
+      await fetch('/api/projects', { method: 'PATCH', body: JSON.stringify({ id: editingProjectId, ...projectData }) });
+      alert("Project Updated!");
+    } else {
+      await fetch('/api/projects', { method: 'POST', body: JSON.stringify(projectData) });
+      alert("Project Added!");
+    }
     setShowProjectForm(false);
-    alert("Project Added!");
+    setEditingProjectId(null);
+    setProjectData(defaultProjectData);
     // Refresh projects
     fetch('/api/projects?_t=' + Date.now(), { cache: 'no-store' }).then(res => res.json()).then(data => setProjects(data));
     setLoading(false);
@@ -213,7 +222,7 @@ export default function AdminDashboard() {
     }
   };
 
-  const handleConfigImageUpload = async (e: React.ChangeEvent<HTMLInputElement>, section: 'home' | 'about') => {
+  const handleConfigImageUpload = async (e: React.ChangeEvent<HTMLInputElement>, section: 'home' | 'about' | 'logo' | 'favicon') => {
     const files = e.target.files;
     if (!files || files.length === 0 || !config) return;
 
@@ -227,8 +236,12 @@ export default function AdminDashboard() {
       if (data.urls) {
         if (section === 'home') {
           setConfig({ ...config, home: { ...config.home, heroImage: data.urls[0] } });
-        } else {
+        } else if (section === 'about') {
           setConfig({ ...config, about: { ...config.about, image: data.urls[0] } });
+        } else if (section === 'logo') {
+          setConfig({ ...config, logoImage: data.urls[0] });
+        } else if (section === 'favicon') {
+          setConfig({ ...config, faviconImage: data.urls[0] });
         }
       }
     } catch (err) {
@@ -318,6 +331,48 @@ export default function AdminDashboard() {
         <div className="bg-white rounded-3xl md:rounded-[3rem] p-6 md:p-12 shadow-sm border">
            {activeTab === "Home" && (
               <div className="space-y-8">
+                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                   <div className="space-y-4">
+                      <label className="block text-sm font-bold">Site Logo (appears in header and footer)</label>
+                      <div className="relative aspect-[3/1] max-w-sm rounded-3xl overflow-hidden border bg-slate-50 flex flex-col items-center justify-center group cursor-pointer">
+                        {config.logoImage ? (
+                          <img src={config.logoImage} className="w-full h-full object-contain p-4 group-hover:scale-105 transition-transform duration-500" />
+                        ) : (
+                          <div className="text-center">
+                            <Image className="text-slate-300 mx-auto mb-2" size={32} />
+                            <span className="text-xs text-slate-400 font-bold">Upload Logo</span>
+                          </div>
+                        )}
+                        <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center flex-col text-white">
+                          <Upload size={24} className="mb-2" />
+                          <p className="font-bold text-sm">Change Logo</p>
+                        </div>
+                        <input type="file" onChange={(e) => handleConfigImageUpload(e, 'logo')} className="absolute inset-0 opacity-0 cursor-pointer" accept="image/*" />
+                      </div>
+                   </div>
+
+                   <div className="space-y-4">
+                      <label className="block text-sm font-bold">Favicon (appears in browser tab)</label>
+                      <div className="relative aspect-square w-32 rounded-3xl overflow-hidden border bg-slate-50 flex flex-col items-center justify-center group cursor-pointer">
+                        {config.faviconImage ? (
+                          <img src={config.faviconImage} className="w-full h-full object-contain p-4 group-hover:scale-105 transition-transform duration-500" />
+                        ) : (
+                          <div className="text-center">
+                            <Image className="text-slate-300 mx-auto mb-2" size={24} />
+                            <span className="text-[10px] text-slate-400 font-bold">Upload Favicon</span>
+                          </div>
+                        )}
+                        <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center flex-col text-white">
+                          <Upload size={16} className="mb-1" />
+                          <p className="font-bold text-[10px]">Change</p>
+                        </div>
+                        <input type="file" onChange={(e) => handleConfigImageUpload(e, 'favicon')} className="absolute inset-0 opacity-0 cursor-pointer" accept="image/*" />
+                      </div>
+                   </div>
+                 </div>
+                 
+                 <div className="h-px bg-slate-100 my-8 w-full" />
+
                  <div><label className="block text-sm font-bold mb-3">Hero Title</label><textarea value={config.home.heroTitle} onChange={(e) => setConfig({...config, home: {...config.home, heroTitle: e.target.value}})} className="w-full bg-slate-50 p-6 rounded-2xl border-none outline-none focus:ring-2 ring-primary font-bold text-xl" rows={3} /></div>
                  <div><label className="block text-sm font-bold mb-3">Hero Subtitle</label><textarea value={config.home.heroSubtitle} onChange={(e) => setConfig({...config, home: {...config.home, heroSubtitle: e.target.value}})} className="w-full bg-slate-50 p-6 rounded-2xl border-none outline-none focus:ring-2 ring-primary" rows={3} /></div>
                  
@@ -374,7 +429,7 @@ export default function AdminDashboard() {
                        <h3 className="text-2xl font-black text-slate-900">Portfolio Projects</h3>
                        <p className="text-slate-500">Showcase your best work here.</p>
                     </div>
-                    <button onClick={() => setShowProjectForm(true)} className="bg-primary text-white px-8 py-4 rounded-2xl font-bold flex items-center gap-2 shadow-xl hover:scale-105 transition-all"><Plus size={20}/> New Project</button>
+                    <button onClick={() => { setProjectData(defaultProjectData); setEditingProjectId(null); setShowProjectForm(true); }} className="bg-primary text-white px-8 py-4 rounded-2xl font-bold flex items-center gap-2 shadow-xl hover:scale-105 transition-all"><Plus size={20}/> New Project</button>
                  </div>
 
                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -404,12 +459,31 @@ export default function AdminDashboard() {
                                 </div>
                               </div>
                             ) : (
-                              <button 
-                                onClick={() => setConfirmDeleteId(proj.id)}
-                                className="absolute top-4 right-4 z-10 bg-white/90 backdrop-blur p-2 rounded-full text-slate-400 hover:text-red-500 hover:bg-red-50 transition-all shadow-sm"
-                              >
-                                <Trash2 size={18} />
-                              </button>
+                              <div className="absolute top-4 right-4 z-10 flex gap-2">
+                                <button 
+                                  onClick={() => {
+                                    setProjectData({
+                                      title: proj.title || "",
+                                      category: proj.category || "",
+                                      subCategory: proj.subCategory || "",
+                                      description: proj.description || "",
+                                      image: proj.image || "",
+                                      gallery: proj.gallery || []
+                                    });
+                                    setEditingProjectId(proj.id);
+                                    setShowProjectForm(true);
+                                  }}
+                                  className="bg-white/90 backdrop-blur p-2 rounded-full text-slate-400 hover:text-primary hover:bg-primary/5 transition-all shadow-sm"
+                                >
+                                  <Pencil size={18} />
+                                </button>
+                                <button 
+                                  onClick={() => setConfirmDeleteId(proj.id)}
+                                  className="bg-white/90 backdrop-blur p-2 rounded-full text-slate-400 hover:text-red-500 hover:bg-red-50 transition-all shadow-sm"
+                                >
+                                  <Trash2 size={18} />
+                                </button>
+                              </div>
                             )}
                             <div className="aspect-video relative overflow-hidden bg-slate-200">
                                {proj.image ? (
@@ -722,11 +796,11 @@ export default function AdminDashboard() {
         <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[2000] flex items-center justify-center p-6">
            <div className="bg-white w-full max-w-xl rounded-[3rem] p-12 relative shadow-2xl">
               <button onClick={() => setShowProjectForm(false)} className="absolute top-8 right-8 text-slate-400 hover:text-slate-900"><X size={24} /></button>
-              <h2 className="text-3xl font-black mb-8">Add Project</h2>
-               <form onSubmit={handleCreateProject} className="space-y-4 max-h-[70vh] overflow-y-auto px-2">
+              <h2 className="text-3xl font-black mb-8">{editingProjectId ? "Edit Project" : "Add Project"}</h2>
+               <form onSubmit={handleSaveProject} className="space-y-4 max-h-[70vh] overflow-y-auto px-2">
                   <div className="space-y-2">
                     <label className="text-xs font-bold uppercase text-slate-400 ml-1">Project Name</label>
-                    <input onChange={(e) => setProjectData({...projectData, title: e.target.value})} className="w-full bg-slate-50 p-5 rounded-2xl outline-none focus:ring-2 ring-primary" placeholder="Project Name" required />
+                    <input value={projectData.title} onChange={(e) => setProjectData({...projectData, title: e.target.value})} className="w-full bg-slate-50 p-5 rounded-2xl outline-none focus:ring-2 ring-primary" placeholder="Project Name" required />
                   </div>
 
                   <div className="space-y-6">
@@ -766,6 +840,7 @@ export default function AdminDashboard() {
                   <div className="space-y-2">
                     <label className="text-xs font-bold uppercase text-slate-400 ml-1">Description</label>
                     <textarea 
+                      value={projectData.description}
                       onChange={(e) => setProjectData({...projectData, description: e.target.value})} 
                       className="w-full bg-slate-50 p-5 rounded-2xl outline-none focus:ring-2 ring-primary" 
                       placeholder="Project details..."
@@ -826,7 +901,7 @@ export default function AdminDashboard() {
                <form onSubmit={handleCreateBlog} className="space-y-6 max-h-[70vh] overflow-y-auto px-2">
                   <div className="space-y-2">
                     <label className="text-xs font-bold uppercase text-slate-400 ml-1">Post Title</label>
-                    <input onChange={(e) => setBlogData({...blogData, title: e.target.value})} className="w-full bg-slate-50 p-5 rounded-2xl outline-none focus:ring-2 ring-primary font-bold" placeholder="e.g. The Future of AI in Design" required />
+                    <input value={blogData.title} onChange={(e) => setBlogData({...blogData, title: e.target.value})} className="w-full bg-slate-50 p-5 rounded-2xl outline-none focus:ring-2 ring-primary font-bold" placeholder="e.g. The Future of AI in Design" required />
                   </div>
 
                   <div className="space-y-3">
@@ -848,6 +923,7 @@ export default function AdminDashboard() {
                   <div className="space-y-2">
                     <label className="text-xs font-bold uppercase text-slate-400 ml-1">Short Excerpt</label>
                     <textarea 
+                      value={blogData.excerpt}
                       onChange={(e) => setBlogData({...blogData, excerpt: e.target.value})} 
                       className="w-full bg-slate-50 p-5 rounded-2xl outline-none focus:ring-2 ring-primary" 
                       placeholder="Catchy summary for the preview..."
@@ -859,6 +935,7 @@ export default function AdminDashboard() {
                   <div className="space-y-2">
                     <label className="text-xs font-bold uppercase text-slate-400 ml-1">Post Content (Markdown supported)</label>
                     <textarea 
+                      value={blogData.content}
                       onChange={(e) => setBlogData({...blogData, content: e.target.value})} 
                       className="w-full bg-slate-50 p-5 rounded-2xl outline-none focus:ring-2 ring-primary" 
                       placeholder="Write your article here..."

@@ -1,6 +1,8 @@
-export const dynamic = 'force-dynamic';
 import { NextResponse } from 'next/server';
 import { getData, addBlog } from '@/lib/store';
+import { revalidatePath } from 'next/cache';
+
+export const dynamic = 'force-dynamic';
 
 export async function GET() {
   const data = await getData();
@@ -15,5 +17,9 @@ export async function POST(request: Request) {
     date: new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }),
     published: true
   });
+  
+  revalidatePath('/blog');
+  revalidatePath('/api/blogs');
+  
   return NextResponse.json(newBlog);
 }

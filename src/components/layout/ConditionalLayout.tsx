@@ -9,18 +9,20 @@ const AIChatbot = dynamic(() => import("../chat/AIChatbot"), { ssr: false });
 
 export default function ConditionalLayout({
   children,
+  logoImage
 }: {
   children: React.ReactNode;
+  logoImage?: string;
 }) {
   const pathname = usePathname();
   const isAdmin = pathname?.startsWith("/admin");
 
   return (
     <>
-      {!isAdmin && <Navbar />}
+      {!isAdmin && <Navbar logoImage={logoImage} />}
       <main>{children}</main>
       {!isAdmin && <AIChatbot />}
-      {!isAdmin && <Footer />}
+      {!isAdmin && <Footer logoImage={logoImage} />}
     </>
   );
 }

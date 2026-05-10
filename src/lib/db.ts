@@ -7,6 +7,7 @@ export interface Project {
   image: string; // Featured image
   gallery?: string[]; // Multiple images
   featured: boolean;
+  industry?: string;
 }
 
 export interface BlogPost {

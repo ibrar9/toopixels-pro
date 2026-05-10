@@ -38,6 +38,17 @@ export async function addProject(project: Project) {
   return project;
 }
 
+export async function updateProject(id: string, updates: Partial<Project>) {
+  const data = await getData();
+  const index = data.projects.findIndex((p: Project) => p.id === id);
+  if (index !== -1) {
+    data.projects[index] = { ...data.projects[index], ...updates };
+    await saveData(data);
+    return data.projects[index];
+  }
+  return null;
+}
+
 export async function addBlog(blog: BlogPost) {
   const data = await getData();
   data.blogs.push(blog);
@@ -143,3 +154,4 @@ export async function getAnalytics() {
   const data = await getData();
   return data.analytics || [];
 }
+

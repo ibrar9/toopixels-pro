@@ -30,3 +30,17 @@ export async function DELETE(request: Request) {
   }
   return NextResponse.json({ error: 'Missing ID' }, { status: 400, headers: NO_CACHE });
 }
+
+export async function PATCH(request: Request) {
+  const body = await request.json();
+  const { id, ...updates } = body;
+  
+  if (!id) {
+    return NextResponse.json({ error: 'Missing ID' }, { status: 400, headers: NO_CACHE });
+  }
+
+  const { updateProject } = await import('@/lib/store');
+  const updated = await updateProject(id, updates);
+  
+  return NextResponse.json(updated, { headers: NO_CACHE });
+}

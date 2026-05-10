@@ -59,7 +59,9 @@
         "General",
         "Logo "
       ]
-    }
+    },
+    "logoImage": "/api/media/1778402738759-Logo.png",
+    "faviconImage": "/api/media/1778403393436-Logo.jpg"
   },
   "inquiries": [],
   "orders": [],
@@ -81,6 +83,16 @@
     },
     {
       "date": "2026-05-05T13:49:47.509Z",
+      "city": "Unknown",
+      "country": "Unknown"
+    },
+    {
+      "date": "2026-05-10T08:43:26.237Z",
+      "city": "Unknown",
+      "country": "Unknown"
+    },
+    {
+      "date": "2026-05-10T08:45:47.932Z",
       "city": "Unknown",
       "country": "Unknown"
     }

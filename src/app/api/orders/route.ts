@@ -1,6 +1,8 @@
-export const dynamic = 'force-dynamic';
 import { NextResponse } from 'next/server';
 import { addOrder, getOrders, updateOrder, deleteOrder } from '@/lib/store';
+import { revalidatePath } from 'next/cache';
+
+export const dynamic = 'force-dynamic';
 
 export async function GET() {
   const orders = await getOrders();
@@ -15,12 +17,20 @@ export async function POST(request: Request) {
     date: new Date().toLocaleString(),
     status: 'pending'
   });
+  
+  revalidatePath('/admin/dashboard');
+  revalidatePath('/api/orders');
+  
   return NextResponse.json(newOrder);
 }
 
 export async function PATCH(request: Request) {
   const body = await request.json();
   const updated = await updateOrder(body.id, { status: body.status });
+  
+  revalidatePath('/admin/dashboard');
+  revalidatePath('/api/orders');
+  
   return NextResponse.json(updated);
 }
 
@@ -29,6 +39,8 @@ export async function DELETE(request: Request) {
   const id = searchParams.get('id');
   if (id) {
     await deleteOrder(id);
+    revalidatePath('/admin/dashboard');
+    revalidatePath('/api/orders');
     return NextResponse.json({ success: true });
   }
   return NextResponse.json({ error: 'Missing ID' }, { status: 400 });

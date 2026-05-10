@@ -18,7 +18,7 @@ const navLinks = [
   { name: "Blog", href: "/blog" },
 ];
 
-export default function Navbar() {
+export default function Navbar({ logoImage }: { logoImage?: string }) {
   const [isOpen, setIsOpen] = useState(false);
   const [isCalculatorOpen, setIsCalculatorOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
@@ -49,7 +49,11 @@ export default function Navbar() {
     >
       <div className="max-w-7xl mx-auto flex items-center justify-between">
         <Link href="/" className="text-2xl font-black tracking-tighter text-primary">
-          TOOPIXELS<span className="text-foreground">.</span>
+          {logoImage ? (
+            <img src={logoImage} alt="Site Logo" className="h-8 md:h-10 w-auto object-contain" />
+          ) : (
+            <>TOOPIXELS<span className="text-foreground">.</span></>
+          )}
         </Link>
 
         {/* Desktop Nav */}
